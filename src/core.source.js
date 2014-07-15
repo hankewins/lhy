@@ -14,7 +14,7 @@
 
 			return ns;
 		},
-		packpage: function(){
+		packpage: function(ns,func){
 
 		}
 	};
