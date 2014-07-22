@@ -1,0 +1,20 @@
+{
+  "name": "lhy",
+  "version": "0.0.0",
+  "homepage": "https://github.com/hankewins/lhy",
+  "authors": [
+    "hankewins <hankewins@gmail.com>"
+  ],
+  "description": "Framework for mobile platform.",
+  "keywords": [
+    "mobile"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
