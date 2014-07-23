@@ -1,29 +1,53 @@
 (function(){
-	var T = {
-		namespace: function(name){
-			if (!name){
-				return window;
-			}
-			var ns = window, nsArr = name.split('.');
+	// 三个臭皮匠，顶过诸葛亮！
+	// smart 因智慧过生，有你、有我、有他
+    var smart = {
+        namespace: function(name){
+            if (!name){
+            	return window;
+            }
 
-			for (var i = 0; i < nsArr.length; i++){
-				var n = nsArr[i];
-				ns[n] = ns[n] || {};
-				ns = ns[n];
-			}
+            var nms = name.split('.');
+            var tmp = window;
 
-			return ns;
-		},
-		packpage: function(ns,func){
+            for (var i = 0; i < nms.length; i++){
+                var ns = nms[i];
+                tmp[ns] = tmp[ns] || {};
+                tmp = tmp[ns];
+            }
 
-		}
-	};
+            return tmp;
+        },
+        package:function(ns,func){
+            var target;
+            if(typeof ns == "function"){
+                func=ns;
+                target = window; 
+            }
+            else if(typeof ns == "string"){
+                target = this.$namespace(ns);
+            }
+            else if(typeof ns == "object"){
+                target  = ns;
+            }
+            func.call(target,this);
+        },
+        extend: function(destination, source){
+            for (var i in source){
+            	if (source.hasOwnProperty(i)){
+            		destination[i] = source[i];
+            	}
+            }
 
-	window.lhy = window.TT = window.T = T;
+            return destination;
+        },
+    };
 
-	if (typeof define === 'function'){
-		define(function(){
-			return T;
-		});
-	}
+    window.lhy = window.smart = smart;
+
+    if (typeof define === 'function'){
+        define(function(){
+            return lhy;
+        });
+    }
 })();

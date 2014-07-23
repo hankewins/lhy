@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>QUnit Example</title>
+<link rel="stylesheet" href="qunit/qunit.css">
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<h1 id="qunit-header">QUnit smart core function test</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture">测试标记</div>
+
+<script src="qunit/qunit.js"></script>
+<script src="../src/core.source.js"></script>
+<script type="text/javascript">
+    QUnit.test("smart.namespace",function (assert){
+        var aa = smart.namespace('breach.children');
+        assert.equal(breach.hasOwnProperty('children'),true,'生成全局变局，并检验是否包含多级命名空间');
+    });
+
+    QUnit.test("smart.package",function (assert){
+        smart.package(function(smart){
+            var util = {
+                cookie: function(){
+                    // Todo
+                }
+            };
+            smart.util = util;
+        });
+        assert.equal(smart.hasOwnProperty('util'),true,'检验package规范是否成立');
+    });
+
+    QUnit.test("smart.extend",function (assert){
+        var obj1 = {"name": "hankewins", "work": "gionee", "age":25};
+        var obj2 = {"coo": "I have a dream !"};
+        assert.equal(smart.extend(obj1,obj2).hasOwnProperty("coo"),true,'检查对象的浅拷贝是否正常');
+    });
+</script>
+</body>
+</html>
