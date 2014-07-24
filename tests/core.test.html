@@ -41,9 +41,15 @@
         assert.equal(smart.extend(obj1,obj2).hasOwnProperty("coo"),true,'检查对象的浅拷贝是否正常');
     });
 
-    var arr = [1,2,3];
-    console.log(smart.type(arr));
+    QUnit.test("smart.isArray",function (assert){
+        var arr = [1,2,3,4,5];
+        assert.equal(smart.isArray(arr),true,'类型检测「数组类型」');
+    });
 
+    QUnit.test("smart.isString",function (assert){
+        var arr = 'it was a sting';
+        assert.equal(smart.isString(arr),true,'类型检测「字符串类型」');
+    });
 </script>
 </body>
 </html>

@@ -40,16 +40,21 @@
             }
 
             return destination;
-        },
-        type: function(o){
-        	var ots = Object.prototype.toString;
-        	var arr = ['Array','Object','String','Number','Function','EmptyObject','Boolean','Undefind','Null'];
-
-        	for (var i = 0; i < arr.length; i++){
-        		return ots.call(o) === '"[Object ' + arr[i] +']"' ? true : false;
-        	}
         }
     };
+
+    smart.package(function(smart){
+    	var arr = ['Array', 'Object', 'Boolean', 'String', 'Function', 'Number', 'RegExp', 'Undefined', 'Null', 'IE'];
+    	var ots = Object.prototype.toString;
+    	// 
+    	for (var i = 0; i < arr.length; i++){
+    	    smart['is'+arr[i]] = (function(n){
+                return function(o){
+                	return ots.call(o) === "[object "+arr[n]+"]" ? true : false;
+                } 
+    	    })(i);
+    	}
+    });
 
     window.lhy = window.smart = smart;
 
