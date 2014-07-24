@@ -41,6 +41,14 @@
 
             return destination;
         },
+        type: function(o){
+        	var ots = Object.prototype.toString;
+        	var arr = ['Array','Object','String','Number','Function','EmptyObject','Boolean','Undefind','Null'];
+
+        	for (var i = 0; i < arr.length; i++){
+        		return ots.call(o) === '"[Object ' + arr[i] +']"' ? true : false;
+        	}
+        }
     };
 
     window.lhy = window.smart = smart;

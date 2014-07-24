@@ -40,6 +40,10 @@
         var obj2 = {"coo": "I have a dream !"};
         assert.equal(smart.extend(obj1,obj2).hasOwnProperty("coo"),true,'检查对象的浅拷贝是否正常');
     });
+
+    var arr = [1,2,3];
+    console.log(smart.type(arr));
+
 </script>
 </body>
 </html>
