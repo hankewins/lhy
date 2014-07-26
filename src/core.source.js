@@ -40,6 +40,28 @@
             }
 
             return destination;
+        },
+        /**
+         * 类数组对象转换成数组
+         * 
+         * @name ota [oject to array]
+         * @function
+         * @param {Object} arrObj 类数组对象
+         * @return {Array} 转换后的数组
+         */  
+        ota: function(arrObj){
+        	var arr = [];
+        	
+        	try{
+        		return arr.slice.call(arrObj); 
+        	}
+        	catch(e){
+        		for (var i = 0, lens = arrObj.length; i < lens; i++){
+        			arr.push(arrObj);
+        		}
+
+        		return arr;
+        	}
         }
     };
 
