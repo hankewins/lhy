@@ -49,12 +49,12 @@
 		  	 * 参考链接 http://developer.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Global_Objects:Array:forEach
 		  	 * @param   {[Function]}	callback 要执行的函数
 		  	 */
-			forEach:Array.prototype.forEach
+			forEach:/*Array.prototype.forEach
 				? function(){
 					var args=Array.prototype.slice.call(arguments,1);
 					return Array.prototype.forEach.apply(arguments[0],args);
 				}
-				: function(arr,callback/*thisArg*/){
+				: */function(arr,callback/*thisArg*/){
 					var len=arr.length,
 						thisP;
 					if(typeof callback !== "function"){
@@ -78,12 +78,12 @@
 			 * @param {Number}  fromIndex   从数组的何处开始查找
 			 * @return {Number}返回o在arr中的索引下标
 			 */
-			indexOf:Array.prototype.indexOf
+			indexOf:/*Array.prototype.indexOf
 				? function(){
 					var args=Array.prototype.indexOf.apply(arguments[0],args);
 					return Array.prototype.indexOf.apply()
 				}
-				: function(arr,o,fromIndex){
+				:*/ function(arr,o,fromIndex){
 					if(fromIndex == undefined){
 						fromIndex =0;
 					} else if (fromIndex < 0) {
@@ -104,12 +104,12 @@
 			 * @param {Number}  fromIndex   从数组的何处开始查找
 			 * @return {Number} 			返回o在arr中的索引下标
 			 */
-			lastIndexOf:Array.prototype.indexOf
+			lastIndexOf:/*Array.prototype.indexOf
 				? function(){
 					var args=Array.prototype.lastIndexOf.apply(arguments[0],args);
 					return Array.prototype.indexOf.apply()
 				}
-				: function(arr,o,fromIndex){
+				:*/ function(arr,o,fromIndex){
 					if(fromIndex == undefined){
 						fromIndex =arr.length -1;
 					} else if (fromIndex < 0) {
