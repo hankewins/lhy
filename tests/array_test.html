@@ -2,23 +2,16 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>QUnit Example</title>
+  <title>QUnit array function test</title>
   <link rel="stylesheet" href="qunit/qunit.css">
 </head>
 <body>
+  <h2 id="qunit-banner"></h2>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
+  <h2 id="qunit-userAgent"></h2>
   <script src="qunit/qunit.js"></script>
-  <script src="../src/array.source.js"></script>
-</body>
-<body>
-    <h1 id="qunit-header">QUnit array function test</h1>
-    <h2 id="qunit-banner"></h2>
-    <div id="qunit-testrunner-toolbar"></div>
-    <h2 id="qunit-userAgent"></h2>
-    <ol id="qunit-tests"></ol>
-    <div id="qunit-fixture">测试标记</div>
-
+  <script src="../src/smart.array.js"></script>
     <script>
     QUnit.test("$A.forEach",function (assert){
     	var arr=[1,2,3,4];
@@ -37,10 +30,158 @@
       assert.equal($A.lastIndexOf(arr,2),1,'反向查找某一元素在数组中的索引下标');
     });
 
+    QUnit.test("$A.map",function(assert){
+      var arr=[1,2,3,4],
+          expectedV=[1,4,9,16],
+          callback=function(i){
+            return i*i;
+          };
+      assert.equal($A.map(arr,callback).join(','),expectedV.join(','),'返回一个由原数组中的每个元素调用一个指定方法后的返回值组成的新数组');
+    });
+
+    QUnit.test("$A.filter",function (assert){
+      var arr=[1,2,3,4],
+          expectedV=[2,4],
+          callback=function(v){
+            return v%2==0;
+          };
+      assert.equal($A.filter(arr,callback).join(','),expectedV.join(','),'返回一个由原数组中元素执行回调函数且返回值为true的原数组元素');
+    });
+
+    QUnit.test("$A.some",function (assert){
+      var arr=[1,2,3,4],
+          expectedV=true,
+          callback=function(v){
+            return v%3==0;
+          };
+      assert.equal($A.some(arr,callback),expectedV,'判断数组中是否至少有一个元素经过callback处理后返回true');
+    });
+
+    QUnit.test("$A.every",function (assert){
+      var arr=[1,12,13,14],
+          arr1=[11,12,13,14],
+          expectedV=false,
+          expectedV1=true,
+          callback=function(v){
+            return v>10;
+          };
+      assert.equal($A.every(arr,callback),expectedV,'判断数组中是否所有元素经过callback处理后返回true');
+      assert.equal($A.every(arr1,callback),expectedV1,'判断数组中是否所有元素经过callback处理后返回true');
+    });
+
+    QUnit.test("$A.reduce",function (assert){
+      var arr=[1,2,3,4],
+          arr1=[[1,2],[3,4],[5,6]],
+          expectedV=10,
+          expectedV1=[1,2,3,4,5,6].join(','),
+          callback=function(a,b){
+            return a+b;
+          },
+          callback1=function(a,b){
+            return a.concat(b);
+          };
+      assert.equal($A.reduce(arr,callback),expectedV,'简化或降级数组-将数组所有项相加');
+      assert.equal($A.reduce(arr1,callback1).join(','),expectedV1,'简化或降级数组-扁平化数组');
+    });
+
+    QUnit.test("$A.reduceRight",function (assert){
+      var arr=[1,2,3,4],
+          arr1=[[1,2],[3,4],[5,6]],
+          expectedV=10,
+          expectedV1=[5,6,3,4,1,2].join(','),
+          callback=function(a,b){
+            return a+b;
+          },
+          callback1=function(a,b){
+            return a.concat(b);
+          };
+      assert.equal($A.reduceRight(arr,callback),expectedV,'简化或降级数组-将数组所有项相加');
+      assert.equal($A.reduceRight(arr1,callback1).join(','),expectedV1,'简化或降级数组-扁平化数组');
+    });
+
+    QUnit.test("$A.insertAt",function (assert){
+      var arr=[1,2,3,4];
+      assert.equal($A.insertAt(arr,2,1),true,'在数组指定位置插入元素-插入成功');
+      assert.equal($A.insertAt(arr,2,-1),false,'在数组指定位置插入元素-插入失败');
+    });
+
+    QUnit.test("$A.insertBefore",function (assert){
+      var arr=[1,2,3,4];
+      assert.equal($A.insertBefore(arr,2,1),true,'在数组指定元素(前)插入元素-插入成功');
+      assert.equal($A.insertBefore(arr,5,-1),false,'在数组指定元素(前)插入元素-插入失败');
+    });
+
+    QUnit.test("$A.insertAfter",function (assert){
+      var arr=[1,2,3,4];
+      assert.equal($A.insertAfter(arr,2,1),true,'在数组指定元素(前)插入元素-插入成功');
+      assert.equal($A.insertAfter(arr,5,-1),false,'在数组指定元素(前)插入元素-插入失败');
+    });
+
+    QUnit.test("$A.remove",function (assert){
+      var arr=[1,2,3,4];
+      assert.equal($A.remove(arr,2),true,'删除数组指定元素-删除成功');
+      assert.equal($A.remove(arr,5),false,'删除数组指定元素-删除失败');
+    });
+   
+    QUnit.test("$A.max",function (assert){
+      var arr=[1,2,3,4];
+      assert.equal($A.max(arr),4,'求数组中的最大值');
+    });
+
+    QUnit.test("$A.min",function (assert){
+      var arr=[1,2,3,4,-18];
+      assert.equal($A.min(arr),-18,'求数组中的最小值');
+    });
+
+    QUnit.test("$A.sum",function (assert){
+      var arr=[1,2,3,4];
+      assert.equal($A.sum(arr),10,'数组元素求和');
+    });
+
+    QUnit.test("$A.replace ",function (assert){
+      var arr=[1,2,3,4];
+      assert.equal($A.replace(arr,3,5),true,'替换数组指定元素');
+    });
+
+    QUnit.test("$A.unique ",function (assert){
+      var arr=[1,2,3,5,4,3,4],
+          expectedV=[1,2,3,5,4];
+      assert.equal($A.unique(arr).join(','),expectedV.join(','),'数组去重');
+    });
+
+    QUnit.test("$A.diff ",function (assert){
+      var a=[1,2,3,5,4,3,4],
+          b=[1,4,5,7,8,9,2],
+          expectedV=[3];
+      assert.equal($A.diff(a,b).join(','),expectedV.join(','),'两数组的差集');
+    });
+
+    QUnit.test("$A.intersect ",function (assert){
+      var a=[1,2,3,5,4,3,4],
+          b=[1,4,5,7,8,9,2],
+          expectedV=[1,2,5,4];
+      assert.equal($A.intersect(a,b).join(','),expectedV.join(','),'两数组的并集');
+    });
+
+    QUnit.test("$A.union",function (assert){
+      var a=[1,2,3,5,4,3,4],
+          b=[1,4,5,7,8,9,2],
+          expectedV=[1,2,3,5,4,7,8,9];
+      assert.equal($A.union(a,b).join(','),expectedV.join(','),'两数组的合集');
+    });
+
     QUnit.test("$A.contains",function (assert){
       var arr=[1,2,3,4];
       assert.equal($A.contains(arr,2),true,'数组中是否含有某一特定元素');
     });
+
+    QUnit.test("$A.bubbleSort",function (assert){
+      var a=[1,2,3,5,4,3,4],
+          expectedV=[1,2,3,3,4,4,5];
+      assert.equal($A.bubbleSort(a).join(','),expectedV.join(','),'冒泡排序');
+    });
+
+   
     </script>
 </body>
 </html>
