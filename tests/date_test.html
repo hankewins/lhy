@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QUnit date function test</title>
+  <link rel="stylesheet" href="qunit/qunit.css">
+</head>
+<body>
+  <h2 id="qunit-banner"></h2>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <h2 id="qunit-userAgent"></h2>
+  <script src="qunit/qunit.js"></script>
+  <script src="../src/smart.date.js"></script>
+    <script>
+    QUnit.test("$D.getDatePeriod",function (assert){
+    	var d1=new Date("08/03/2014"),
+          d2=new Date('08/01/2012');
+    	assert.equal($D.getDatePeriod(d1,d2),2,'两日期相隔的天数');
+    });
+
+    </script>
+</body>
+</html>
