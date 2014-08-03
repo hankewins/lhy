@@ -15,8 +15,15 @@
     <script>
     QUnit.test("$D.getDatePeriod",function (assert){
     	var d1=new Date("08/03/2014"),
-          d2=new Date('08/01/2012');
+          d2=new Date("08/01/2014");
     	assert.equal($D.getDatePeriod(d1,d2),2,'两日期相隔的天数');
+    });
+
+     QUnit.test("$D.isLeapYear",function (assert){
+      var d1=new Date("08/03/2014"),
+          d2=new Date("08/01/2024");
+      assert.equal($D.isLeapYear(d1),false,'闰年否-否');
+      assert.equal($D.isLeapYear(d2),true,'闰年否-是');
     });
 
     </script>
