@@ -1,3 +1,10 @@
+/**
+ * @description:
+ * 	
+ *  
+ * @version: 1.0.0
+ * 
+ */
 (function(){
 
 	var win = window;
@@ -5,13 +12,21 @@
 	var lhy = win.lhy || (win.lhy = {});
 	var GUID = 0;
 	var FGUID = 0;
-	/*
+	/* 事件缓存
 	cache.__event_cache = {
 		1 : {
-			elem: 
 			events: {
-				click: [function(){}, function(){}]
-			}
+				click: [
+					{
+						elem: '',
+						fguid: 1,
+						type: 'click',
+						handle: function(){},
+						selector: '',
+					},
+				]
+			},
+			listener: function(e) {}
 		}	
 	}
 	*/
@@ -21,68 +36,63 @@
 	var cache = lhy.cache.__event_cache = {};
 
 	lhy.event = {
-		listener: function(event) {
-			event = lhy.event.fix(event || win.event);
-			var elem = event.target || event.srcElement;
-			var type = event.type;
-			var i, len;
-			if (!elem.guid) return;
-			var handles = cache[elem.guid]['events'][type];
-			for (i=0, len=handles.length; i<len; i++) {
-				if (handles[i].apply(elem, arguments) === false) {
-					event.preventDefault();
-				}
-			}
-		},
-		bind: function(elem, type, handle) {
-			if (!elem || !type || !handle) return;
-			
-			type = type.trim().toLowerCase().replace(/\s+/g, ' ');
-			if (type.indexOf(' ') > 0) {
-				var typeArr = type.split(' ');
+		/**
+		 * 事件监听函数，用于中转回调执行事件
+		 * @param {guid}
+		 */
+		listener: function(guid) {
+			return function(event) {
+				event = lhy.event.fix(event || win.event);
+				var elem = cache[guid].elem;
+				var type = event.type;
 				var i, len;
-				// 绑定多个事件
-				for (i=0, len=typeArr.length; i<len; i++) {
-					this.bind(elem, typeArr[i], handle);
+				var handles = cache[guid]['events'][type];
+				// 顺序执行缓存中的回调函数
+				for (i=0, len=handles.length; i<len; i++) {
+					if (handles[i].apply(elem, arguments) === false) {
+						event.preventDefault();
+					}
 				}
 			}
-
-			var guid = elem.guid || (elem.guid = ++GUID);
-			cache[guid] || (cache[guid] = {});
-			var events = cache[guid]['events'] || (cache[guid]['events'] = {});
-			var handles = events[type] || (events[type] = []);
-			
-			if (!handle.fguid) {
-				handle.fguid = ++FGUID
-			}
-
-			handles.push(handle);
-			cache[guid]['elem'] = elem;
-			lhy.event.add(elem, type, lhy.event.listener);
 		},
-
+		/**
+		 * 事件绑定
+		 * @param {elem} 	元素
+		 * @param {type} 	事件名称
+		 * @param {handle} 	事件回调函数
+		 * 
+		 * @description 
+		 * 支持多个事件同时绑定，事件之间用空格隔开，比如“click mouseup”
+		 */
+		bind: function(elem, type, handle) {
+			this._bind(elem, type, handle);
+		},
+		/**
+		 * 事件解绑
+		 * @param {elem} 	元素
+		 * @param {type} 	事件名称
+		 * @param {handle} 	事件回调函数
+		 */
 		unbind: function(elem, type, handle) {
 
-			var guid = elem.guid,
+			var guid,
 				events,
 				handles,
 				j, l, fguid;
 
-			type.trim().toLowerCase().replace(/\s+/g, ' ');
+			if (!elem || (elem.guid == undefined)) return;
+			guid = elem.guid;
+			type = lhy.util.trim(type).toLowerCase().replace(/\s+/g, ' ');
 			if (type.indexOf(' ') > 0) {
 				var i, len, typeArr;
 				for (i=0, len=typeArr.length; i<len; i++) {
 					lhy.event.unbind(elem, typeArr[i], handle);
 				}
+				return;
 			}
-			
-			events = cache[guid].events;
-			handles = events[type];
+			handles = cache[guid].events[type];
 			if (handle) {
-				if (!handles) return;
-					console.log(handle.fguid);
-					console.log(handles[j].fguid);
-				for (j=0, l<handles.length; j<l; j++) {
+				for (j=0, l=handles.length; j<l; j++) {
 					if (handle.fguid === handles[j].fguid) {
 						handles.splice(j, 1);
 					}
@@ -92,26 +102,99 @@
 				}
 			} else if (type) {
 				delete cache[guid].events[type];
-				lhy.event.remove(elem, type, lhy.event.listener);
+				lhy.event.remove(elem, type, cache[guid].listener);
+				if (lhy.util.isEmptyObject(cache[guid].events)) {
+					delete cache[guid];
+				}
 			} else {
 				for (var t in events) {
-					lhy.event.remove(elem, events[t], lhy.event.listener);
+					lhy.event.remove(elem, events[t], cache[guid].listener);
 				}
 				delete cache[guid];
 			}
 		},
 
-		on: function(elem, type, handle) {
+		_bind: function(elem, type, handle, selector) {
+			var guid,
+				handles,
+				handleObj;
 
+			if (!elem || !type || !handle) return;
+			type = lhy.util.trim(type).toLowerCase().replace(/\s+/g, ' ');
+			if (type.indexOf(' ') > 0) {
+				var typeArr = type.split(' ');
+				var i, len;
+				// 绑定多个事件
+				for (i=0, len=typeArr.length; i<len; i++) {
+					this._bind(elem, typeArr[i], handle, selector);
+				}
+				return;
+			}
+
+			guid = elem.guid || (elem.guid = ++GUID);
+			if (!cache[guid]) {
+				cache[guid] = {
+					listener: this.listener(guid),
+					events: {}
+				};
+			}
+			handles = cache[guid].events[type] || (cache[guid].events[type] = []);
+			if (!handles.length) {
+				handles.delegateCount = 0;
+			}
+			if (!handle.fguid) {
+				handle.fguid = ++FGUID;
+			}
+			// 事件对象
+			handleObj = {
+				fguid: handle.fguid,
+				elem: elem,
+				selector: selector,
+				type: type,
+				handle: handle
+			};
+
+			if (selector) {
+				handles.splice(handles.delegateCount++, 0, handleObj);
+			} else {
+				handles.push(handleObj);
+			}
+			this.add(elem, type, cache[guid].listener, false);
+		},
+
+		on: function(elem, type, handle) {
+			var selector = elem;
+			elem = doc.body;
+			this._bind(elem, type, handle, selector);
 		},
 
 		off: function(elem, type, handle) {
 
 		},
-
-		trigger: function(elem, type) {
-
-		},
+		/**
+		 * @param {elem}		事件元素
+		 * @param {type}		事件类型
+		 * @param {canBuble}	是否冒泡 stopPropagation
+		 * @param {cancelable}	是否取消默认事件 preventDefault
+		 *
+		 * @description 兼容ie的事件
+		 */
+		trigger: (function() {
+			if (doc.dispatchEvent) {
+				return function(elem, type, canBuble, cancelable){
+					if (canBuble === undefined) canBuble = true;
+					if (cancelable === undefined) cancelable = true;
+					var evt = doc.createEvent('HTMLEvents');
+					evt.initEvent(type, canBuble, cancelable);
+					elem.dispatchEvent(evt);
+				}
+			} else {
+				return function(elem, type) {
+					var evt = doc.createEventObject();
+					elem.fireEvent('on' + type, evt);
+				}
+			}
+		}()),
 		// 原生事件
 		add: (function() {
 			if (doc.addEventListener) {
@@ -136,7 +219,10 @@
 				}
 			}
 		}()),
-
+		/**
+		 * @param {event} 	事件
+		 * @description 	修正ie事件
+		 */
 		fix: function(event) {
 			if (doc.addEventListener) return event;
 			var evt = {};
@@ -144,6 +230,7 @@
 			var body = document.body;
 
 			evt.target = event.srcElement || document;
+			// 文本节点处理
 			evt.target.nodeType === 3 && (evt.target = evt.target.parentNode);
 			evt.preventDefault = function() {
 				event.returnValue = false;
@@ -153,6 +240,7 @@
 			};
 			evt.pageX = evt.clientX + (html && html.scrollLeft || body && body.scrollLeft || 0) - (html && html.clientLeft || body && body.clientLeft || 0);
 	        evt.pageY = evt.clientY + (html && html.scrollTop  || body && body.scrollTop  || 0) - (html && html.clientTop  || body && body.clientTop  || 0);
+	        // mouseover 与 mouseout事件处理
 	        evt.relatedTarget = event.fromElement === evt.target ? event.toElement : event.fromElement;
 
 			for (var e in event) {
