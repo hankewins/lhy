@@ -19,11 +19,17 @@
     	assert.equal($D.getDatePeriod(d1,d2),2,'两日期相隔的天数');
     });
 
-     QUnit.test("$D.isLeapYear",function (assert){
+    QUnit.test("$D.isLeapYear",function (assert){
       var d1=new Date("08/03/2014"),
           d2=new Date("08/01/2024");
       assert.equal($D.isLeapYear(d1),false,'闰年否-否');
       assert.equal($D.isLeapYear(d2),true,'闰年否-是');
+    });
+
+    QUnit.test("$D.dateFormat",function (assert){
+      var d1=new Date("08/03/2014");
+      assert.equal($D.dateFormat(d1,"yyyy-MM-dd"),'2014-08-03','日期格式化');
+      assert.equal($D.dateFormat('yyyy-MM-dd q'),'2014-08-04 3','日期格式化-without date');
     });
 
     </script>
