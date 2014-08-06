@@ -8,10 +8,23 @@ smart.package(function(smart){
     var supportNavtiveClassList = 'classList' in document.documentElement;
 
     var dom = {
-        $: function(selector, context){
-
+        one: function(selector, context){
+            if (!selector){
+                return;
+            }
+            var ctx = context || doc;
+            return ctx.querySelector(selector);         
         },
-
+        all: function(selector, context){
+            if (!selector){
+                return;
+            }
+            var ctx = context || doc;
+            return ctx.querySelectorAll(selector);
+        },
+        // querySelector slower than getElementById
+        // querySelectorAll slower than getElementsByTagName
+        // http://www.w3cfuns.com/article-5593688-1-1.html 
         id: function(id){
             return doc.getElementById(id);
         },
@@ -56,11 +69,20 @@ smart.package(function(smart){
                 if (!elem || !className || !dom.hasClass(elem, className)){
                     return;
                 }
-                elem.className = elem.className.replace(new RegExp('()' + className + '()'),' ');
+                elem.className = elem.className.replace(new RegExp('(?:^|\\s+)' + className + '(?:$|\\s+)'), ' ');
             }
         },
-        toggleClass: function(){
-
+        toggleClass: function(elem, className){
+            if (dom.hasClass(elem, className)){
+                dom.removeClass(elem, className);
+            } else {
+                dom.addClass(elem, className);
+            }
+        },
+        replaceClass: function(elem, old, new){
+            if (dom.hasClass(elem, old)){
+                elem.className = elem.className.replace(new RegExp('(?:^|\\s+)' + old + '(?:$|\\s+)'), ' ' + new + ' ');
+            }
         },
         parent: function(){
 
