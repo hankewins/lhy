@@ -62,6 +62,17 @@
 
         		return arr;
         	}
+        },
+        /**
+         * 空对象的判断
+         * @param  {Object}  obj obj参数
+         * @return {Boolean} true || false
+         */
+        isEmptyObject: function(obj){
+            for (var name in obj){
+                return false;
+            }
+            return true;
         }
     };
 
