@@ -73,6 +73,43 @@
                 return false;
             }
             return true;
+        },
+        /**
+         * 把字符串填充为指定的长度
+         * @param  {[type]} str      [description]
+         * @param  {[type]} length   [description]
+         * @param  {[type]} pad_str  [description]
+         * @param  {[type]} pad_type [description]
+         * @return {[type]}          [description]
+         */
+        str_pad: function(str, length, pad_str, pad_type){
+            var pad_str  = pad_str || '';
+            var pad_arr  = ["STR_PAD_BOTH", "STR_PAD_LEFT", "STR_PAD_RIGHT"];
+            var pad_type = pad_type &&  pad_arr.indexOf(pad_type) ? pad_type : pad_arr[2];
+        
+            if (!str || !length || !smart.isString(str) || smart.isNumber(length)){
+                return;
+            }
+
+            if (length <= str.length){
+                return str;
+            }
+
+            if (pad_type == pad_arr[0]){
+                while(length--){
+                    str = (length%2 == 0 ? str : str + pad_str;
+                }
+            } else if (pad_type == pad_arr[1]){
+                while(length--){
+                    str = pad_str + str;
+                }
+            } else if (pad_type == pad_arr[2]){
+                while(length--){
+                    str = str + pad_str;
+                }
+            }
+                
+            return str;
         }
     };
 
