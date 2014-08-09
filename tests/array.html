@@ -11,8 +11,10 @@
   <div id="qunit-fixture"></div>
   <h2 id="qunit-userAgent"></h2>
   <script src="qunit/qunit.js"></script>
+  <script src="../src/smart.core.js"></script>
   <script src="../src/smart.array.js"></script>
     <script>
+    var $A=smart.array;
     QUnit.test("$A.forEach",function (assert){
     	var arr=[1,2,3,4];
     	$A.forEach(arr,function(v,i){

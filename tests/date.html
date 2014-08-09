@@ -11,8 +11,10 @@
   <div id="qunit-fixture"></div>
   <h2 id="qunit-userAgent"></h2>
   <script src="qunit/qunit.js"></script>
+  <script src="../src/smart.core.js"></script>
   <script src="../src/smart.date.js"></script>
     <script>
+    var $D=smart.date;
     QUnit.test("$D.getDatePeriod",function (assert){
     	var d1=new Date("08/03/2014"),
           d2=new Date("08/01/2014");
@@ -28,8 +30,16 @@
 
     QUnit.test("$D.dateFormat",function (assert){
       var d1=new Date("08/03/2014");
-      assert.equal($D.dateFormat(d1,"yyyy-MM-dd"),'2014-08-03','日期格式化');
-      assert.equal($D.dateFormat('yyyy-MM-dd q'),'2014-08-04 3','日期格式化-without date');
+      for(var i=0;i<5000;i++){
+        assert.equal($D.dateFormat(d1,"yyyy-MM-dd"),'2014-08-03','日期格式化');
+      }
+    });
+
+     QUnit.test("$D.dateFormat1",function (assert){
+      var d1=new Date("08/03/2014");
+      for(var i=0;i<5000;i++){
+        assert.equal($D.dateFormat1(d1,"yyyy-MM-dd"),'2014-08-03','日期格式化');
+      }
     });
 
     </script>

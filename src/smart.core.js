@@ -97,7 +97,7 @@
 
             if (pad_type == pad_arr[0]){
                 while(length--){
-                    str = (length%2 == 0 ? str : str + pad_str;
+                    str = (length%2 == 0 )? str : str + pad_str;
                 }
             } else if (pad_type == pad_arr[1]){
                 while(length--){
