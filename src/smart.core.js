@@ -110,6 +110,21 @@
             }
                 
             return str;
+        },
+        forEach: function (obj, iterator, context) {
+            var key;
+            if (obj) {
+                if (obj.forEach && obj.forEach !== this.forEach) {
+                    obj.forEach(iterator, context);
+                } else {
+                    for (key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                          iterator.call(context, obj[key], key);
+                        }
+                    }
+                }
+            }
+            return obj;
         }
     };
 
