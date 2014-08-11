@@ -16,11 +16,6 @@ smart.package(function(smart){
     var returnFalse = function() {
         return false;
     };
-    var eventMethods =  {
-        preventDefault: 'isDefaultPrevented',
-        stopImmediatePropagation: 'isImmediatePropagationStopped',
-        stopPropagation: 'isPropagationStopped'
-    };
     /* 事件缓存
     cache.__event_cache = {
         1 : {
@@ -31,6 +26,7 @@ smart.package(function(smart){
                         fguid: 1,
                         handle: function(e){},
                         selector: 'selector',
+                        origType: origType,
                         type: 'click'
                     },
                 ]
@@ -44,14 +40,15 @@ smart.package(function(smart){
     smart.cache = smart.cache || (smart.cache = {});
     var cache = smart.cache.__event_cache || (smart.cache.__event_cache = {});
 
-    var event = {
+    var Event = {
         _bind: function(elem, type, handle, selector) {
             var guid,
                 handles,
-                handleObj;
+                handleObj,
+                special;
 
             if (!elem || !type || !handle) return;
-            type = util.trim(type).toLowerCase().replace(/\s+/g, ' ');
+            type = smart.util.trim(type).toLowerCase().replace(/\s+/g, ' ');
             if (type.indexOf(' ') > 0) {
                 var typeArr = type.split(' ');
                 var i, len;
@@ -63,14 +60,17 @@ smart.package(function(smart){
             }
 
             guid = elem.guid || (elem.guid = ++GUID);
-            if (!cache[guid]) {
-                cache[guid] = {
-                    listener: function(e){
-                        event._dispatch.apply(elem, arguments);
-                    },
-                    events: {}
-                };
-            }
+            cache[guid] = cache[guid] || {
+                listener: function(event){
+                    // 事件兼容性处理
+                    event = Event.compitable(event || win.event);
+                    Event._dispatch.apply(elem, [event]);
+                },
+                events: {}
+            };
+            origType = type;
+            special = Event.special[type] || {};   // mouseenter mouseleave
+            type = (selector ? special.delegateType : special.bindType) || type;
             handles = cache[guid].events[type];
             // 相同的type只绑定一次
             if (!handles) {
@@ -88,6 +88,7 @@ smart.package(function(smart){
                 elem: elem,
                 fguid: handle.fguid,
                 selector: selector,
+                origType: origType,
                 type: type,
                 handle: handle
             };
@@ -112,7 +113,7 @@ smart.package(function(smart){
             var guid,
                 events,
                 handleObj,
-                handles,
+                handles, special,
                 j, l, k, fguid;
 
             if (!elem || (elem.guid == undefined)) return;
@@ -120,11 +121,11 @@ smart.package(function(smart){
             events = cache[guid].events || {};
             // e.g.: "click mouseup mousedown"
             if (type) {
-                type = util.trim(type).toLowerCase().replace(/\s+/g, ' ');
+                type = smart.util.trim(type).toLowerCase().replace(/\s+/g, ' ');
                 if (type.indexOf(' ') > 0) {
                     var i, len, typeArr;
                     for (i=0, len=typeArr.length; i<len; i++) {
-                        this.unbind(elem, typeArr[i], handle, selector);
+                        Event.unbind(elem, typeArr[i], handle, selector);
                     }
                     return;
                 }
@@ -132,10 +133,12 @@ smart.package(function(smart){
                 // off(elem)
                 // unbind(elem)
                 for (k in events) {
-                    this.unbind(elem, k, handle, selector);
+                    Event.unbind(elem, k, handle, selector);
                 }
                 return;
             }
+            special = Event.special[type] || {};   // mouseenter mouseleave
+            type = (selector ? special.delegateType : special.bindType) || type;
             handles = events[type] || [];
             j = handles.length;
             while (j--) {
@@ -150,10 +153,10 @@ smart.package(function(smart){
                 }
             }
             if (!handles.length) {
-                this.remove(elem, type, cache[guid].listener);
+                Event.remove(elem, type, cache[guid].listener);
                 delete events[type];
 
-                if (util.isEmptyObject(events)) {
+                if (smart.util.isEmptyObject(events)) {
                     delete cache[guid];
                 }
             }
@@ -163,16 +166,14 @@ smart.package(function(smart){
          */
         _dispatch: function(event) {
             var elem,
-                type, args, i, j, k,
+                type, i, j, k,
                 handles, handleObj, handle,
                 delegateCount, 
                 queue = [],
                 matches, selector, matched,
                 target, ret;
             // 事件兼容性处理
-            event = smart.event.compitable(event || win.event);
-            args = Array.prototype.slice.call(arguments);
-            args[0] = event;
+            // event = Event.compitable(event || win.event);
             type = event.type;
             target = event.target;
             handles = cache[this.guid]['events'][type];
@@ -184,7 +185,7 @@ smart.package(function(smart){
                     for (i=0; i<delegateCount; i++) {
                         selector = handles[i].selector;
                         if (matches[selector] === undefined) {
-                            if (util.matchesSelector(target, selector)) {
+                            if (smart.util.matchesSelector(target, selector)) {
                                 matches.push(handles[i]);
                             }
                         }
@@ -209,7 +210,9 @@ smart.package(function(smart){
                 event.currentTarget = matched.elem;
                 k = 0;
                 while ( (handleObj = matched.handles[k++]) && !event.isImmediatePropagationStopped()) {
-                    ret = handleObj.handle.apply(matched.elem, args);
+                    event.handleObj = handleObj;
+                    ret = ((Event.special[handleObj.origType] || {}).handle || 
+                        handleObj.handle).apply(matched.elem, [event]);
                     if (ret !== undefined) {
                         if ((event.result = ret) === false) {
                             event.preventDefault();
@@ -269,88 +272,146 @@ smart.package(function(smart){
             elem = doc.body;
             this._unbind(elem, type, handle, selector);
         },
-    
-        trigger: (function() {
-            
-        }()),
-        // 原生事件
-        add: (function() {
-            if (doc.addEventListener) {
-                return function(elem, type, handle) {
-                    elem.addEventListener(type, handle, false);
-                }
-            } else {
-                return function(elem, type, handle) {
-                    elem.attachEvent('on' + type, handle);  
-                }
+        // 事件触发
+        trigger: function(elem, type) {
+            var event, 
+                special, 
+                elemArr;
+
+            special = Event.special[type] || {};   // mouseenter mouseleave
+            type = special.delegateType || type;
+            elemArr = Array.prototype.slice.call(doc.querySelectorAll(elem));
+            try {
+                event = doc.createEvent('Events');
+                event.initEvent(type, true, true);
+                smart.forEach(elemArr, function(el) {
+                    el.dispatchEvent(event);
+                });
+            } catch(e) {
+                event = doc.createEventObject();
+                smart.forEach(elemArr, function(el) {
+                    el.fireEvent(type, event);
+                });
             }
-        }()),
+        },
         // 原生事件
-        remove: (function() {
-            if (doc.removeEventListener) {
-                return function(elem, type, handle) {
-                    elem.removeEventListener(type, handle); 
-                }
-            } else {
-                return function(elem, type, handle){
-                    elem.detachEvent('on' + type, handle);  
-                }
+        add: function(elem, type, handle) {
+            try {
+                elem.addEventListener(type, handle, false);
+            } catch(e) {
+                elem.attachEvent('on' + type, handle);
             }
-        }()),
+        },
+        // 原生事件
+        remove: function(elem, type, handle){
+            try {
+                elem.removeEventListener(type, handle);
+            } catch(e) {
+                elem.detachEvent('on' + type, handle);
+            }
+        },
         /**
-         * @param {event}   事件代理
+         * @description 事件对象的修正
+         * @param {event}   原生事件
          */
         compitable: function(event) {
 
-            var eventMethod, methods,
+            var eventMethod, methods, method,
                 source, proxyEvent,
                 key, k;
-            
-            proxyEvent = this.fix(event); // 代理事件
+
+            proxyEvent = doc.addEventListener ? {originalEvent: event} : Event.fix(event);
             source = proxyEvent.originalEvent;  // 原始事件
-            // 增加属性，用于标记事件是否冒泡、是否被禁止默认事件，主要用于事件代理
-            for (key in eventMethods) {
-                eventMethod = source[key];
-                source[key] = function() {
-                    this[eventMethods[key]] = returnTrue;
-                    return eventMethod && eventMethod.apply(source, arguments);
-                }
-                proxyEvent[eventMethods[key]] = returnFalse;
-            }
             // 复制原始事件属性
             for (k in source) {
-                proxyEvent[k] = source[k];
+                if (k!== 'returnValue' && source[k] != undefined) {
+                    proxyEvent[k] = source[k];
+                }
             }
+            // 修复FF的问题
+            proxyEvent.timeStamp = source.timeStamp || new Date().getTime();
+            // 增加属性，用于标记事件是否冒泡、是否被禁止默认事件，主要用于事件代理
+            proxyEvent.preventDefault = function() {
+                this['isDefaultPrevented'] = returnTrue;
+                source.preventDefault();
+            };
+            proxyEvent.stopPropagation = function() {
+                this['isPropagationStopped'] = returnTrue;
+                source.stopPropagation();
+            };
+            proxyEvent.stopImmediatePropagation = function() {
+                this['isImmediatePropagationStopped'] = returnTrue;
+                source.stopImmediatePropagation();
+            };
+            proxyEvent['isDefaultPrevented'] = returnFalse,
+            proxyEvent['isImmediatePropagationStopped'] = returnFalse,
+            proxyEvent['isPropagationStopped'] = returnFalse;
             return proxyEvent;
         },
-        // ie兼容性处理
+        /**
+         * @description 特殊事件的处理
+         */
+        special: {},
+        // ie6-8兼容性处理
         fix: function(event) {
+            var evt = {},
+                html, body;
 
-            if (doc.addEventListener) {
-                return {originalEvent: event};
-            }
-
-            var html, body;
-
-            html = document.documentElement;
-            body = document.body;
-            event.target = event.srcElement || document;
-            // 文本节点处理
-            event.target.nodeType === 3 && (event.target = event.target.parentNode);
-            event.preventDefault = function() {
+            html = doc.documentElement;
+            body = doc.body;
+            evt.originalEvent = event;
+            evt.target = event.srcElement;
+            event.target.nodeType === 3 ? evt.target = event.target.parentNode : '';
+            evt.preventDefault = function() {
                 event.returnValue = false;
             };
-            event.stopPropagation = function() {
+            evt.stopPropagation = function() {
                 event.cancelBuble = true;
             };
-            event.pageX = event.clientX + (html && html.scrollLeft || body && body.scrollLeft || 0) - (html && html.clientLeft || body && body.clientLeft || 0);
-            event.pageY = event.clientY + (html && html.scrollTop  || body && body.scrollTop  || 0) - (html && html.clientTop  || body && body.clientTop  || 0);
+            evt.pageX = event.clientX + (html && html.scrollLeft || body && body.scrollLeft || 0) - (html && html.clientLeft || body && body.clientLeft || 0);
+            evt.pageY = event.clientY + (html && html.scrollTop  || body && body.scrollTop  || 0) - (html && html.clientTop  || body && body.clientTop  || 0);
             // mouseover 与 mouseout事件处理
-            event.relatedTarget = event.fromElement === event.target ? event.toElement : event.fromElement;
-            
-            return {originalEvent: event};
+            evt.relatedTarget = event.fromElement === evt.target ? event.toElement : event.fromElement;
+
+            return evt;
         }
     };
 
-    smart.event = event;
+    /**
+     * @description 
+     * mouseover  mouseout 的兼容性处理
+     */
+    smart.forEach({
+        mouseenter: 'mouseover',
+        mouseleave: 'mouseout'
+    }, function(fix, orig) {
+        Event.special[orig] = {
+            delegateType: fix,
+            bindType: fix,
+            handle: function(event) {
+                var ret,
+                    target = this,
+                    related = event.relatedTarget,
+                    handleObj = event.handleObj;
+                // jquery中还有这个判断 !jQuery.contains( target, related )
+                if (!related || (related !== target)) {
+                    event.type = handleObj.origType;
+                    ret = handleObj.handle.apply(this, arguments);
+                    event.type = fix;
+                }
+            }
+        }
+    });
+    // 绑定单个事件函数
+    smart.array.forEach(['focusin', 'focusout', 'focus', 'blur', 'load', 'resize', 'scroll', 'unload', 'click', 'dblclick',
+    'mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave',
+    'change', 'select', 'keydown', 'keypress', 'keyup', 'error'], function(event) {
+        Event[event] = function(elem, callback) {
+            return callback ?
+                Event.bind(elem, event, callback) :
+                Event.trigger(elem, event);
+        };
+    });
+
+    smart.event = Event;
 });

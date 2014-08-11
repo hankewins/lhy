@@ -17,16 +17,19 @@
       <div class="sub" style="width:100px; height: 100px; border: 1px solid red;"></div>
       <div class="sub" style="width:100px; height: 100px; border: 1px solid red;"></div>
       <input type="text" id="inputText">
+      <a href="http://www.baidu.com" target="_blank" id="testA">testA</a>
   </div>
 
   <script src="qunit/qunit.js"></script>
-  <script src="../src/core.source.js"></script>
+  <script src="../src/smart.core.js"></script>
+  <script src="../src/smart.array.js"></script>
   <script src="../src/smart.util.js"></script>
   <script src="../src/smart.event.js"></script>
   <script>
     var el = document.querySelector('.sub');;
     var fun1 = function(e) {
       console.log('fun1 fun1 fun1');
+      e.preventDefault();
     }
     var fun2 = function(e) {
       console.log('fun2 fun2 fun2');
@@ -37,6 +40,8 @@
     smart.event.on('.sub', 'click', fun1);
     smart.event.on('.sub', 'click', fun2);
     smart.event.bind('.sub', 'click', fun3);
+    smart.event.click('#testA', fun1);
+    smart.event.on('.sub', 'mouseenter', fun2);
     // smart.event.off('.sub', 'click', fun1);
     // smart.event.off('.sub', 'click');
     // smart.event.off('.sub');
