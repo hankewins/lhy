@@ -54,5 +54,6 @@ smart.package(function(smart) {
 			return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\+")).test(doc.cookie);
 		}
 	};
+	
 	smart.cookie = cookie;
 });
