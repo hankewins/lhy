@@ -13,7 +13,7 @@ smart.package(function(smart) {
 	 */
 	var parseUA = function(ua, platform) {
 		var name, version, engine;
-		/Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0
+		// /Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:31.0) Gecko/20100101 Firefox/31.0
 		ua = ua.toLowerCase();
 		platform = platform ? platform.toLowerCase() : '';
 		//attention:Safari gives two version number, one technical in the Safari/xyz token, one user-friendly in a Version/xyz token
