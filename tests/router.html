@@ -1,0 +1,173 @@
+<!DOCTYPE>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>test router.js</title>
+  <link rel="stylesheet" href="./qunit/qunit.css">
+</head>
+<body>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+<script src="../src/smart.core.js"></script>
+<script src="../src/smart.router.js"></script>
+<script src="./qunit/qunit.js"></script>
+<script>
+(function(){
+	
+	var lastRoute = null;
+    var lastArgs = [];
+
+	QUnit.module('smart.router', {
+		setup: function() {
+			lastArgs.length = 0;
+		},
+		teardown: function() {
+			
+		}
+	});
+
+	var routeOptions = {
+		routes: {
+		  "search/:query":              "search",
+		  "search/:query/p:page":       "search",
+		  "query/:entity":              "query",
+		  "noCallback":                 "noCallback",
+		  "counter":                    "counter",
+		  "charñ":                      "charUTF",
+		  "char%C3%B1":                 "charEscaped",
+		  "contacts":                   "contacts",
+		  "contacts/new":               "newContact",
+		  "contacts/:id":               "loadContact",
+		  "route-event/:arg":           "routeEvent",
+		  "optional(/:item)":           "optionalItem",
+		  "named/optional/(y:z)":       "namedOptional",
+		  "splat/*args/end":            "splat",
+		  ":repo/compare/*from...*to":  "github",
+		  "decode/:named/*splat":       "decode",
+		  "*first/complex-*part/*rest": "complex",
+		  // "function/:value":            ExternalObject.routingFunction,
+		  "*anything":                  "anything"
+		},
+
+		initialize : function(options) {
+		  this.testing = options.testing;
+		  this.route('implicit', 'implicit');
+		},
+
+		counter: function() {
+		  this.count++;
+		},
+
+		implicit: function() {
+		  this.count++;
+		},
+
+		search: function(query, page) {
+			lastArgs.push(query);
+			lastArgs.push(page);
+		},
+
+		charUTF: function() {
+		  this.charType = 'UTF';
+		},
+
+		charEscaped: function() {
+		  this.charType = 'escaped';
+		},
+
+		contacts: function(){
+		  this.contact = 'index';
+		},
+
+		newContact: function(){
+		  this.contact = 'new';
+		},
+
+		loadContact: function(){
+		  this.contact = 'load';
+		},
+
+		optionalItem: function(arg){
+		  this.arg = arg != void 0 ? arg : null;
+		},
+
+		splat: function(args) {
+		  this.args = args;
+		},
+
+		github: function(repo, from, to) {
+		  this.repo = repo;
+		  this.from = from;
+		  this.to = to;
+		},
+
+		complex: function(first, part, rest) {
+		  this.first = first;
+		  this.part = part;
+		  this.rest = rest;
+		},
+
+		query: function(entity, args) {
+			lastArgs.push(entity);
+			lastArgs.push(args);
+		},
+		anything: function(whatever) {
+		  this.anything = whatever;
+		},
+
+		namedOptional: function(z) {
+		  this.z = z;
+		},
+		decode: function(named, path) {
+		  this.named = named;
+		  this.path = path;
+		},
+		routeEvent: function(arg) {
+		}
+	};
+
+	var initializeOptions = {
+			initOpt: 100
+		}
+	smart.router.config(routeOptions).start(initializeOptions);
+	// start初始参数
+	QUnit.test('initialize', function(assert) {
+		assert.equal(smart.router.options.initOpt, 100);
+	});
+	// 带一个参数
+	QUnit.test("routes (simple)", function(assert) {
+		smart.router.navigate('search/news', true);
+		assert.equal(lastArgs[0], 'news');
+		assert.equal(lastArgs[1], undefined);
+		assert.equal(smart.router.getFragment(), 'search/news');
+	});
+	// 带两个参数复杂参数
+	QUnit.test("routes (two part)", function(assert) {
+		smart.router.navigate('search/nyc/p10', true);
+		assert.equal(lastArgs[0], 'nyc');
+		assert.equal(lastArgs[1], '10');
+		assert.equal(smart.router.getFragment(), 'search/nyc/p10');
+	});
+	// navigator
+	QUnit.test("routes via navigate", function(assert) {
+	  	smart.router.navigate('search/manhattan/p20', true);
+	 	assert.equal(lastArgs[0], 'manhattan');
+	  	assert.equal(lastArgs[1], '20');
+	});
+	// 带参数
+	QUnit.test("routes via navigate with params", function(assert) {
+		smart.router.navigate('query/test?a=b', true);
+		assert.equal(lastArgs[0], 'test');
+		assert.equal(lastArgs[1], 'a=b');
+	});
+
+	QUnit.test("routes via navigate for backwards-compatibility", function(assert) {
+	  smart.router.navigate('search/manhattan/p20', true);
+	  assert.equal(lastArgs[0], 'manhattan');
+	  assert.equal(lastArgs[1], '20');
+	});
+}());
+</script>
+
+</body>
+</html>
