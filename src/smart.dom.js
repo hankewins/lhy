@@ -84,30 +84,74 @@ smart.package(function(smart){
                 elem.className = elem.className.replace(new RegExp('(?:^|\\s+)' + old + '(?:$|\\s+)'), ' ' + new + ' ');
             }
         },
-        parent: function(){
+        children: function(elem){
+            if (elem.childElementCount){
+                return [].slice.call(el.children);
+            }
 
-        },
-        parents: function(){
+            var ret = [];
+            for (var node = elem.firstChild; node; node = node.nextSlibling){
+                node.nodeType == 1 && ret.push(node);
+            }
 
+            return ret;
         },
-        children: function(){
+        next: function(elem){
+            if ("nextElementSibling" in elem){
+                return elem.nextElementSibling;
+            }
 
+            while(elem = elem.nextSlibling){
+                if(elem.nodeType === 1){
+                    return elem;
+                }
+            }
         },
-        siblings: function(){
+        prev: function(elem){
+            if("previousElementSibling" in elem){
+                return elem.previousElementSibling;
+            }
 
+            while(elem = elem.previousSibling){
+                if(elem.nodeType === 1){
+                    return elem;
+                }
+            }
         },
-        prev: function(){
+        first: function(elem){
+            if("firstElementChild" in elem){
+                return elem.firstElementChild;
+            }
 
+            while(elem = elem.firstChild){
+                if(elem.nodeType === 1){
+                    return elem;
+                }
+            }
         },
-        next: function(){
+        last: function(elem){
+            if("lastElementChild" in elem){
+                return elem.firstElementChild;
+            }
 
+            while(elem = elem.lastChild){
+                if(elem.nodeType === 1){
+                    return elem;
+                }
+            }
         },
-        first: function(){
+        parent: function(elem){
+            if("parentElement" in elem){
+                return elem.parentElement;
+            }
 
-        },
-        last: function(){
+            while(elem = elem.parentNode){
+                if(elem.nodeType === 1){
+                    return elem;
+                }
+            }
+        }
 
-        },
 
         
     };

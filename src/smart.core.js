@@ -141,6 +141,20 @@
     	}
     });
 
+    smart.extend(smart,{
+        indexOf: function(arr, item){
+            if (smart.isArray(arr)){
+                return [].indexOf.call(arr,item);
+            } else if (smart.isObject(arr)){
+                for (var k in arr){
+                    if (arr.hasOwnProperty(k) && arr[k] === item){
+                        return k;
+                    }
+                }
+            }
+        }
+    });
+
     window.lhy = window.smart = smart;
 
     if (typeof define === 'function'){
