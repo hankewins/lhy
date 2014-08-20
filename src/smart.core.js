@@ -152,6 +152,33 @@
                     }
                 }
             }
+        },
+        each:function(arr,callback){
+            if(smart.isArray(arr)){
+                return [].forEach.call(arr,callback);
+            }
+            else if(smart.isObject(arr)){
+                for(var i in arr){
+                    if(arr.hasOwnProperty(i)){
+                        if(callback.call(arr[i],arr[i],i,arr) === false) {
+                            return;
+                        }
+                    }
+                }
+            }
+        },
+        filter: function(arr, callback){
+            if(smart.isArray(arr)){
+                return [].filter.call(arr,callback);
+            } else if(smart.isObject(arr)){
+                var newObj = {};
+                smart.each(arr, function(val, index){
+                    if(callback(val,index)){
+                        newObj[index] = val;
+                    }
+                    return newObj;
+                });
+            }
         }
     });
 

@@ -33,6 +33,12 @@ smart.package(function(smart){
             var ctx = context || doc;
             return ctx.getElementByTagName(tagName);
         },
+        matchesSelector: function(elem, selector){
+            if (!elem || !selector) return;
+            var matches = elem.matchesSelector || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.oMatchesSelector || elem.msMatchesSelector;
+            if(matches) return matches.call(elem, selector);
+
+        },
         addClass: function(elem, className){
             if (supportNavtiveClassList){
                 if(!elem || !className || !dom.hasClass(elem, className)){
@@ -150,10 +156,35 @@ smart.package(function(smart){
                     return elem;
                 }
             }
+        },
+        /**
+         * 选择器过滤
+         * @param  {Array}   elems     元素集合
+         * @param  {Object}  selector  选择器过滤项
+         * @return {Boolean}           是否过滤成功
+         */
+        filter: function (elems, selector){
+            return smart.filter(elems, function(elem){
+                return dom.matchesSelector(elems, selector);
+            });
+        },
+        /**
+         * 向后插入元素
+         * @param  {Object}  parentElement     父类元素
+         * @param  {Object}  newElement        插入的元素
+         * @param  {Object}  refernceElement   参考元素
+         * @return {Object}                    被插入的元素
+         */
+        insertAfter: function(parentElement, newElement, refernceElement){
+            var next = refernceElement.nextSibling;
+            if(next){
+                parentElement.insertBefore(newElement, next);
+            }
+            else{
+                parentElement.appendChild(newElement);
+            }
+            return newElement;
         }
-
-
-        
     };
 
     smart.$ = smart.dom = dom;
