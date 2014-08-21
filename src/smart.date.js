@@ -96,7 +96,6 @@ smart.package(function() {
 				}
 			}
 			return formatString;
-
 		}
 	}
 	smart.date=date;

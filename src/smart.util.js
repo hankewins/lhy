@@ -70,7 +70,7 @@ smart.package(function(smart){
         		}
         	}
 
-        	return matchesSelector ? w3cMatches : ieMatches;			
+        	return matchesSelector ? w3cMatches : ieMatches;		
         }())
     };
 

@@ -125,6 +125,18 @@
                 }
             }
             return obj;
+        },
+        trim: function(str){
+            if(!str) return;
+            return str.replace(/(^\s*)|(\s*$)/g,'');
+        },
+        ltrim: function(str){
+            if(!str) return;
+            return str.replace(/(^\s*)/g,'');
+        },
+        rtrim: function(str){
+            if(!str) return;
+            return str.replace(/(\s*$)/g,'');
         }
     };
 
