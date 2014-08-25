@@ -16,20 +16,28 @@
   <div class="wrap" style="width:300px; height:300px; border:1px solid green;">
       <div class="sub" style="width:100px; height: 100px; border: 1px solid red;"></div>
       <div class="sub" style="width:100px; height: 100px; border: 1px solid red;"></div>
-      <input type="text" id="inputText">
-      <a href="http://www.baidu.com" target="_blank" id="testA">testA</a>
+      <div id="box" style="background:#999; height: 50px;">
+        <input type="text" id="inputText">
+        <a href="http://www.baidu.com" target="_blank" id="testA">testA</a>
+      </div>
   </div>
 
-  <script src="qunit/qunit.js"></script>
+  <!-- <script src="qunit/qunit.js"></script> -->
   <script src="../src/smart.core.js"></script>
   <script src="../src/smart.array.js"></script>
   <script src="../src/smart.util.js"></script>
   <script src="../src/smart.event.js"></script>
   <script>
-    var el = document.querySelector('.sub');;
+    // document.body.addEventListener('click', function(){console.log(1111)}, false);
+    // document.getElementsByClassName('sub')[0].addEventListener('click', function(){console.log(2222)}, false);
+    var el = document.querySelector('.sub');
+    var wrap = document.querySelector('.wrap')
     var fun1 = function(e) {
       console.log('fun1 fun1 fun1');
+      // console.log(e);
       e.preventDefault();
+      // e.stopPropagation();
+      // e.stopImmediatePropagation();
     }
     var fun2 = function(e) {
       console.log('fun2 fun2 fun2');
@@ -37,15 +45,9 @@
     var fun3 = function(e) {
       console.log('fun3 fun3 fun3');
     }
-    smart.event.on('.sub', 'click', fun1);
-    smart.event.on('.sub', 'click', fun2);
-    smart.event.bind('.sub', 'click', fun3);
-    smart.event.click('#testA', fun1);
-    smart.event.on('.sub', 'mouseenter', fun2);
-    // smart.event.off('.sub', 'click', fun1);
-    // smart.event.off('.sub', 'click');
-    // smart.event.off('.sub');
-    // smart.event.unbind('.sub');
+
+    smart.event.on('click', wrap, '#testA', fun1);
+    smart.event.on('click', wrap, '#box', fun2);
 
   </script>
 </body>
