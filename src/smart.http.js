@@ -25,7 +25,10 @@ smart.package(function(smart){
 	    	var opts = options;
 	    	var method = opts.method.toLocaleUpperCase();
 	    	var isPost = 'POST' == method;
-	    	var async = ('async' in opts) ? options.async : true;
+            var timeout = opts.timeout;
+            var isComplete = false;
+	    	var async = ('async' in opts) ? options.async : true; //默认为异步请求, 可以设置为同步
+            
 	    	var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : false;
 
 	    	if (!xhr){
@@ -40,6 +43,42 @@ smart.package(function(smart){
 	    	xhr.open(method, opts.url, async);
 
 	    	isPost && xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4){
+                    var status = xhr.status;
+                    if(status == 200 && status < 300 || status == 304 || status == 0){
+                        var response = xhr.responseText.replace(/\r|\n|\t/gi,'');
+                        var json = null;
+                        try{
+                            json = JSON.parse(response);
+                        }catch(e){
+                            console.log('response is not JSON.');
+                        }
+                        opts.success && opts.success(json,xhr);
+                    } else {
+                        opts.error && opts.error(xhr);
+                    }
+                    isComplete = true;
+                    if(timer){
+                        clearTimeout(timer);
+                    }
+                }
+            };
+
+            xhr.send(isPost ? qstr : void(0));
+
+            if(timeout){
+                timer = setTimeout(function(){
+                    if(!isComplete){
+                        xhr.abort();//不abort同一url无法重新发送请求？
+                        opts.timeout && opts.timeout(xhr);
+                    }
+                },timeout);
+            }
+
+            return xhr;
+
 	    }
     };
 
