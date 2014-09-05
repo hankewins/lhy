@@ -118,6 +118,9 @@ smart.package(function(smart){
             handles, handle;
 
         handles = cache[guid(element)];
+        if (!handles) {
+            return result;
+        }
         i = handles.length;
         while (i--) {
             handle = handles[i];
@@ -130,7 +133,6 @@ smart.package(function(smart){
         }
         return result;
     }
-
     var Event = {
         /** 绑定事件，增加绑定事件对象至cache中
          * @element 事件对象
@@ -239,7 +241,7 @@ smart.package(function(smart){
                 callback = selector;
                 selector = undefined;
             }
-            if (element instanceof HTMLElement) {
+            if (doc || element instanceof HTMLElement) {
                 element = [element];
             }
             // 设置回调函数的唯一标识
@@ -259,15 +261,15 @@ smart.package(function(smart){
                 callback = selector;
                 selector = undefined;
             }
-            if (element instanceof HTMLElement) {
+            if (doc || element instanceof HTMLElement) {
                 element = [element];
             }
             smart.forEach(element, function(elem) {
                 Event.remove(elem, type, callback, selector);
             });
         },
-        trigger: function(type, element) {
-            if (element instanceof HTMLElement) {
+        trigger: function(type, element, args) {
+            if (doc || element instanceof HTMLElement) {
                 element = [element];
             }
             if (!smart.isString(type)) return;
@@ -292,6 +294,9 @@ smart.package(function(smart){
                     evt = proxyEvent(evt);
                     // 修改事件的触发元素
                     evt.target = elem;
+                    if (args && smart.isObject(args)) {
+                        for (var o in args) evt[o] = args[o];
+                    }
                     // 查找缓存的事件对象
                     handles = findHandles(t, elem);
                     i = handles.length;
