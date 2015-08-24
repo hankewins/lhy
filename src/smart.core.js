@@ -25,7 +25,7 @@
                 target = window; 
             }
             else if(typeof ns == "string"){
-                target = this.$namespace(ns);
+                target = this.namespace(ns);
             }
             else if(typeof ns == "object"){
                 target  = ns;

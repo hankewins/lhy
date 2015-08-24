@@ -5,8 +5,7 @@
  */
 ;
 smart.package(function(smart) {
-	var doc = document,
-		win = window = this;
+	var doc = document;
 	var cookie = {
 		options: {
 			path: '/',

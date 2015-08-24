@@ -85,9 +85,9 @@ smart.package(function(smart){
                 dom.addClass(elem, className);
             }
         },
-        replaceClass: function(elem, old, new){
+        replaceClass: function(elem, old, newstr){
             if (dom.hasClass(elem, old)){
-                elem.className = elem.className.replace(new RegExp('(?:^|\\s+)' + old + '(?:$|\\s+)'), ' ' + new + ' ');
+                elem.className = elem.className.replace(new RegExp('(?:^|\\s+)' + old + '(?:$|\\s+)'), ' ' + newstr + ' ');
             }
         },
         children: function(elem){
