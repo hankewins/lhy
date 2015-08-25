@@ -3,9 +3,7 @@
  * Package: smart.cookie
  * Need package:smart.core.js
  */
-;
-smart.package(function(smart) {
-	var doc = document;
+smart.package(function() {
 	var cookie = {
 		options: {
 			path: '/',
@@ -28,12 +26,12 @@ smart.package(function(smart) {
 				value += '; expires=' + date.toGMTString();
 			}
 			if (opt.secure) value += '; secure';
-			doc.cookie = sKey + '=' + value;
+			document.cookie = sKey + '=' + value;
 
 		},
 
 		getItem: function(sKey) {
-			var value = doc.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(skey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1");
+			var value = document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(skey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1");
 			return value ? decodeURIComponent(value) : null;
 
 		},
@@ -45,12 +43,12 @@ smart.package(function(smart) {
 			value = "; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 			if (opt.domain) value += "; domain=" + opt.domain;
 			if (opt.path) value += "; path=" + opt.path;
-			doc.cookie = encodeURIComponent(sKey) + "=" + value;
+			document.cookie = encodeURIComponent(sKey) + "=" + value;
 			return true;
 
 		},
 		hasItem: function(sKey) {
-			return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\+")).test(doc.cookie);
+			return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\+")).test(document.cookie);
 		}
 	};
 	

@@ -140,7 +140,7 @@
         }
     };
 
-    smart.package(function(smart){
+    smart.package(function(){
     	var arr = ['Array', 'Object', 'Boolean', 'String', 'Function', 'Number', 'RegExp', 'Undefined', 'Null', 'IE'];
     	var ots = Object.prototype.toString;
     	// 
