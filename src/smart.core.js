@@ -1,6 +1,8 @@
-(function(){
-	// 三个臭皮匠，顶过诸葛亮！
-	// smart 因智慧过生，有你、有我、有他
+/**
+ * 起源：涉世未深的三个臭皮匠，因对前端的执着，带着各自的信念，开始 smart 创作之路。
+ * 定位：smart 因智慧过生，有你、有我、有他，简单、易懂、轻便。
+ */
+;(function(){
     var smart = {
         namespace: function(name){
             if (!name){

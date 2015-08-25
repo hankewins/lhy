@@ -1,19 +1,20 @@
 {
   "name": "smart",
   "version": "0.0.1",
-  "description": "A light javascript library for smart.",
+  "description": "A light javascript library.",
   "main": "gulpfile.js",
   "directories": {
     "test": "tests"
   },
   "dependencies": {
     "del": "^1.2.1",
-    "gulp-minify": "^0.0.5",
-    "gulp-concat": "^2.6.0",
     "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-header": "^1.7.1",
+    "gulp-minify": "^0.0.5",
     "gulp-minify-css": "^1.2.1",
-    "gulp-uglify": "^1.2.0",
-    "gulp-rename": "^1.2.2"
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0"
   },
   "devDependencies": {},
   "scripts": {
