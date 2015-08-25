@@ -1,0 +1,37 @@
+{
+  "name": "smart",
+  "version": "0.0.1",
+  "description": "A light javascript library for smart.",
+  "main": "gulpfile.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "del": "^1.2.1",
+    "gulp-minify": "^0.0.5",
+    "gulp-concat": "^2.6.0",
+    "gulp": "^3.9.0",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-uglify": "^1.2.0",
+    "gulp-rename": "^1.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hankewins/smartjs.git"
+  },
+  "keywords": [
+    "smart",
+    "javascript",
+    "mvc"
+  ],
+  "author": "hankewins",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hankewins/smartjs/issues"
+  },
+  "homepage": "https://github.com/hankewins/smartjs#readme"
+}
