@@ -2,15 +2,22 @@
  * 起源：涉世未深的三个臭皮匠，因对前端的执着，带着各自的信念，开始 smart 创作之路。
  * 定位：smart 因智慧过生，有你、有我、有他，简单、易懂、轻便。
  */
-;(function(){
-    var smart = {
+;(function(undefined){
+
+    var win = window, doc = document;
+    var smart = win['smart'] || {version: '0.0.1'};
+    // use jquery or zepto selector enginer
+    smart.$ = win.jQuery || win.Zepto || win.ender || win.$;
+
+    foreach
+    smart = {
+        // smart.namespace 对象的扩展
         namespace: function(name){
             if (!name){
             	return window;
             }
 
-            var nms = name.split('.');
-            var tmp = window;
+            var nms = name.split('.'), tmp = window;
 
             for (var i = 0; i < nms.length; i++){
                 var ns = nms[i];
@@ -40,7 +47,6 @@
             		destination[i] = source[i];
             	}
             }
-
             return destination;
         },
         /**
@@ -203,4 +209,4 @@
             return lhy;
         });
     }
-})();
+}.call(this));
