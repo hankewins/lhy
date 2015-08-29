@@ -2,19 +2,17 @@
  * 起源：涉世未深的三个臭皮匠，因对前端的执着，带着各自的信念，开始 smart 创作之路。
  * 定位：smart 因智慧过生，有你、有我、有他，简单、易懂、轻便。
  */
-;
 (function(undefined) {
     //'use strict'
     var win = window,
         doc = document,
         slice = Array.prototype.slice,
         jsTypeArr = ['Object', 'Array', 'Function', 'String', 'Number', 'Null', 'Undefined'],
-        smart = win['smart'] || {};
+        smart = smart || {};
     // use jquery or zepto selector enginer
     smart.$ = win.jQuery || win.Zepto || win.ender || win.$;
 
     smart = {
-        version: '0.0.1',
         each: each,
         forEach: each,
         isEmptyObject: function(obj) {
@@ -60,7 +58,7 @@
             func.call(target, this);
         },
         util: function(name, func) {
-            var func = smart.isFunction(func) ? func : empty;
+            func = smart.isFunction(func) ? func : empty;
 
             if (smart.isString(name)) {
                 smart.util[name] = func;
@@ -75,7 +73,7 @@
     each(jsTypeArr, function(index, item) {
         smart['is' + item] = function(obj) {
             return Object.prototype.toString.call(obj) === '[object ' + item + ']' ? true : false;
-        }
+        };
     });
 
     // 参考的资料信息
@@ -137,7 +135,7 @@
         // 获取正在执行的Javascript文件的路径
         var currentScript = smart.util.currentScript();
         var staticPath = '', assetsRoot, webRoot, modulePath, env, reg;
-        var module = module || '';
+        module = module || '';
         if(module){
             reg = new RegExp(module+'\\S+','ig');
         } else {
