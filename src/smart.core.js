@@ -67,6 +67,9 @@
             } else if (smart.isObject(name)) {
                 smart.extend(smart.util, name);
             }
+        },
+        trim: function(str){
+            return str.replace(/^\s+|\s+$/,'');
         }
     };
 

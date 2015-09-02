@@ -36,12 +36,12 @@
 			touch = {};
 		}
 		longTapTimeout = null;
-	}
+	};
 	// 清除长按事件
 	var cancelLongTap = function() {
 		if (longTapTimeout) clearTimeout(longTap);
 		longTapTimeout = null;
-	}
+	};
 
 	// webkit内核浏览器事件类型为touchstart
 	// IE9事件类型为MSPointerDown
@@ -113,7 +113,7 @@
 							touch = {};
 						}, 250);
 					}
-				}, 0)
+				}, 0);
 			} else {
 				touch = {};
 			}
@@ -129,7 +129,7 @@
 		'swipeLeft', 'swipeRight', 'swipeTop', 'swipeBottom', 'transform'], function(eventName) {
 		smart.event[eventName] = function(elem, callback) {
 			smart.event.on(eventName, elem, callback);
-		}
-	})
+		};
+	});
 
 }());

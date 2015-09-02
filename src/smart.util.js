@@ -24,7 +24,7 @@ smart.package(function(smart){
          * @desciption 	去除两边空格
          */
         trim: function(str) {
-        	return str.replace(/^\s*|\s*$/, '');
+        	return str.replace(/^\s*|\s*$/g, '');
         },
         /**
          * @param {elem} 
@@ -37,7 +37,7 @@ smart.package(function(smart){
 
         	var w3cMatches = function(elem, selector) {
         		return matchesSelector.call(elem, selector);				
-        	}
+        	};
         	// 低版本ie
         	var ieMatches = function(elem, selector) {
         		var parent,
@@ -68,7 +68,7 @@ smart.package(function(smart){
         			}
         			return false;
         		}
-        	}
+        	};
 
         	return matchesSelector ? w3cMatches : ieMatches;		
         }())

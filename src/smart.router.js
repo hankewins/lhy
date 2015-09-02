@@ -16,8 +16,7 @@ smart.package(function(smart){
     var trailingSlash = /\/$/;
 
     var addEvent = function(elem, type, callback) {
-        doc.addEventListener ? elem.addEventListener(type, callback, false) :
-            elem.attachEvent('on' + type, callback);
+        doc.addEventListener ? elem.addEventListener(type, callback, false) : elem.attachEvent('on' + type, callback);
     };
 
     var removeEvent = function(elem, type, callback) {
@@ -200,7 +199,7 @@ smart.package(function(smart){
         },
         // 获取url中的hash片段
         getFragment: function(fragment) {
-            if (fragment == null) {
+            if (fragment === null) {
               if (this.options.hasPushState || !this.options.hashChange) {
                 fragment = this.getPath();
               } else {
@@ -225,7 +224,7 @@ smart.package(function(smart){
                  .replace(splatParam, '([^?]*?)');
             return new RegExp('^' + route + '(?:\\?([\\s\\S]*))?$');
         }
-    }
+    };
 
     smart.router = Router;
 });
