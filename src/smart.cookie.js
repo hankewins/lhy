@@ -12,7 +12,7 @@ smart.package(function() {
 			expires: false
 		},
 		_setOptions:function(opt){
-			if(opt==undefined) return this.options;
+			if(opt === undefined) return this.options;
 			return smart.extend(opt,this.options);
 		},
 		setItem: function(sKey, value /*options*/ ) {
@@ -35,7 +35,7 @@ smart.package(function() {
 			return value ? decodeURIComponent(value) : null;
 
 		},
-		
+
 		removeItem: function(sKey /*options*/ ) {
 			if (!sKey || !this.hasItem(sKey)) return false;
 			var opt=this._setOptions(arguments[1]),
@@ -51,6 +51,6 @@ smart.package(function() {
 			return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\+")).test(document.cookie);
 		}
 	};
-	
+
 	smart.cookie = cookie;
 });

@@ -97,7 +97,7 @@ smart.package(function(smart){
 
             var ret = [];
             for (var node = elem.firstChild; node; node = node.nextSlibling){
-                node.nodeType == 1 && ret.push(node);
+                (node.nodeType === 1) && ret.push(node);
             }
 
             return ret;

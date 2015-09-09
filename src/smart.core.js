@@ -68,8 +68,8 @@
                 smart.extend(smart.util, name);
             }
         },
-        trim: function(str){
-            return str.replace(/^\s+|\s+$/,'');
+        trim: function(str) {
+            return str.replace(/^\s+|\s+$/g, '');
         }
     };
 
@@ -137,27 +137,28 @@
     smart.util('application', function(module) {
         // 获取正在执行的Javascript文件的路径
         var currentScript = smart.util.currentScript();
-        var staticPath = '', assetsRoot, webRoot, modulePath, env, reg;
+        var staticPath = '',
+            assetsRoot, webRoot, modulePath, env, reg;
         module = module || '';
-        if(module){
-            reg = new RegExp(module+'\\S+','ig');
+        if (module) {
+            reg = new RegExp(module + '\\S+', 'ig');
         } else {
-            reg = new RegExp(module+'\/[^\/]+$','ig');
+            reg = new RegExp(module + '\/[^\/]+$', 'ig');
         }
         modulePath = currentScript.src.replace(reg, module);
         staticPath = modulePath;
 
-        if(currentScript.src.indexOf(location.host) > -1){
+        if (currentScript.src.indexOf(location.host) > -1) {
             webRoot = location.protocol + '//' + location.host;
             assetsRoot = webRoot;
         } else {
             webRoot = location.protocol + '//' + location.host;
-            if(currentScript.src.indexOf('localhost') > -1){
+            if (currentScript.src.indexOf('localhost') > -1) {
                 assetsRoot = 'http://localhost';
             } else {
-                if(currentScript.src.indexOf('//') > -1){
-                    var protocol = currentScript.src.substring(0,currentScript.src.indexOf('//') + 2);
-                    var host = currentScript.src.replace(protocol,'');
+                if (currentScript.src.indexOf('//') > -1) {
+                    var protocol = currentScript.src.substring(0, currentScript.src.indexOf('//') + 2);
+                    var host = currentScript.src.replace(protocol, '');
                     host = host.substring(0, host.indexOf('/'));
                     assetsRoot = protocol + host;
                 }

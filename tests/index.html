@@ -15,23 +15,24 @@
 </head>
 <body style="width:100%; height:100%;">
 <div id="testId" class="test"></div>
+<ul id="ul">
+    <li>content 1</li>
+    <li>content 2</li>
+    <li>content 3</li>
+    <li>content 4</li>
+    <li>content 5</li>
+</ul>
 <script src="../src/smart.core.js"></script>
-<script src="../src/smart.array.js"></script>
-<!-- <script src="../src/smart.util.js"></script> -->
+<script src="../src/smart.dom.js"></script>
 <script src="../src/smart.event.js"></script>
 <script type="text/javascript">
-// lhy.event.bind(document.body,'click mouseup',function(){
-// 	console.log('hello');
-// });
-var str = '  hello world  ';
+    smart.package(function(){
+        var ul = document.getElementById('ul');
 
-console.log(smart.trim(str).length);
-
-</script>
-<script type="text/javascript">
-    var arr = ['a','b','c'];
-    var obj = {"name": "zhang san", "age": 18};
-
+        smart.event.on('ul','click',function(){
+            alert('aa');
+        });
+    });
 </script>
 </body>
 </html>

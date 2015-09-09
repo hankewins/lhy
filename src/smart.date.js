@@ -28,7 +28,7 @@ smart.package(function() {
 				throw new TypeError('it is not date type');
 			}
 			var year = d.getFullYear();
-			return ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0));
+			return ((year % 4 === 0) && (year % 100 !== 0) || (year % 400 === 0));
 		},
 
 		/**
@@ -84,7 +84,7 @@ smart.package(function() {
 				"s+": date.getSeconds(), //second
 				"q+": Math.floor((date.getMonth() + 3) / 3), //quarter
 				"S": date.getMilliseconds() //millisecond
-			}
+			};
 
 			if (/(y+)/.test(formatString)) {
 				formatString = formatString.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
@@ -97,6 +97,7 @@ smart.package(function() {
 			}
 			return formatString;
 		}
-	}
+	};
+
 	smart.date=date;
-})
+});

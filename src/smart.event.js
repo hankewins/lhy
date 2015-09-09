@@ -2,11 +2,10 @@
  *  smart.event.js
  */
 
-smart.package(function(smart){
+smart.package(function(smart) {
 
     var win = window;
     var doc = document;
-    var smart = win.smart || (win.smart = {});
     // 标识绑定元素与回调函数的唯一性
     var _guid = 1;
     /*缓存绑定的元素、事件、回调、代理函数
@@ -21,12 +20,12 @@ smart.package(function(smart){
             proxy: function(){}     // 每个元素的事件监听函数
         },{}]
     }*/
-    smart.cache || (smart.cache = {});
+    smart.cache = smart.cache || {};
     var cache = smart.cache.__event_cache = {};
     // 获取和设置元素或回调函数的唯一标识id
     var guid = function(element) {
         return element._guid || (element._guid = _guid++);
-    }
+    };
     var returnTrue = function() {
         return true;
     };
@@ -42,8 +41,14 @@ smart.package(function(smart){
     });
     // 标识特殊事件
     var specialEvent = {
-        focus: { focus: 'focusin', blur: 'focusout' },
-        hover: { mouseenter: 'mouseover', mouseleave: 'mouseout' }
+        focus: {
+            focus: 'focusin',
+            blur: 'focusout'
+        },
+        hover: {
+            mouseenter: 'mouseover',
+            mouseleave: 'mouseout'
+        }
     };
     // 获取绑定事件
     // 当浏览器支持focusin时，focus用focusin代替绑定
@@ -64,32 +69,34 @@ smart.package(function(smart){
         // 原始事件
         source = event;
         methods = {
-            preventDefault: 'isDefaultPrevented', 
+            preventDefault: 'isDefaultPrevented',
             stopPropagation: 'isPropagationStopped',
             stopImmediatePropagation: 'isImmediatePropagationStopped'
-        }
+        };
         // 增加属性，用于标记事件是否冒泡、是否被禁止默认事件，主要用于事件代理
         smart.forEach(methods, function(method, key) {
             var sourceMethod = source[key];
             event[key] = function() {
                 this[method] = returnTrue;
                 return sourceMethod && sourceMethod.apply(source, arguments);
-            }
+            };
             // 默认方法
             event[method] = returnFalse;
         });
         // zepto.js
         if (source.defaultPrevented !== undefined ? source.defaultPrevented :
-          'returnValue' in source ? source.returnValue === false :
-          source.getPreventDefault && source.getPreventDefault()) {
-            event['isDefaultPrevented'] = returnTrue
+            'returnValue' in source ? source.returnValue === false :
+            source.getPreventDefault && source.getPreventDefault()) {
+            event.isDefaultPrevented = returnTrue;
         }
         return event;
     };
     // 复制原始事件属性，返回新创建的事件对象
     var proxyEvent = function(event) {
         var proxy, key;
-        proxy = { originalEvent: event };
+        proxy = {
+            originalEvent: event
+        };
         for (key in event) {
             if (event[key] !== undefined) proxy[key] = event[key];
         }
@@ -101,18 +108,18 @@ smart.package(function(smart){
      */
     var contains = doc.documentElement.contains ?
         function(parent, node) {
-          return parent !== node && parent.contains(node)
+            return parent !== node && parent.contains(node);
         } :
         function(parent, node) {
-          while (node && (node = node.parentNode))
-            if (node === parent) return true
-          return false
-        }
+            while (node && (node = node.parentNode))
+                if (node === parent) return true;
+            return false;
+        };
     /* 查找缓存在cache中事件对象
      * 返回满足条件的事件对象
      */
     var findHandles = function(type, element, callback, selector) {
-        var id, 
+        var id,
             result = [],
             i,
             handles, handle;
@@ -124,29 +131,26 @@ smart.package(function(smart){
         i = handles.length;
         while (i--) {
             handle = handles[i];
-            if ((!type || type == handle.type)
-                && (!element || element == handle.elem)
-                && (!callback || guid(callback) === guid(handle.callback))
-                && (!selector || selector == handle.selector)) {
+            if ((!type || type == handle.type) && (!element || element == handle.elem) && (!callback || guid(callback) === guid(handle.callback)) && (!selector || selector == handle.selector)) {
                 result.push(handle);
             }
         }
         return result;
-    }
+    };
     var Event = {
         /** 绑定事件，增加绑定事件对象至cache中
          * @element 事件对象
          * @type 事件类型
          * @callback 事件回调参数
          * @selector 事件代理元素
-        */
+         */
         add: function(element, type, callback, selector) {
             var id, handles, i,
                 handle = {},
-                delegator, fn, result, 
+                delegator, fn, result,
                 target;
-            
-            smart.forEach(type.split(/\s/), function(t){
+
+            smart.forEach(type.split(/\s/), function(t) {
                 id = guid(element);
                 // 获取存储在cache中的事件对象
                 handles = cache[id] || (cache[id] = []);
@@ -155,7 +159,7 @@ smart.package(function(smart){
                     delegator = function(e) {
                         var evt;
                         target = e.target;
-                        while(target != element) {
+                        while (target != element) {
                             if (smart.util.matchesSelector(target, selector)) {
                                 evt = proxyEvent(e);
                                 evt.currentTarget = target;
@@ -165,7 +169,7 @@ smart.package(function(smart){
                                 target = target.parentNode;
                             }
                         }
-                    }
+                    };
                 }
                 // 创建事件缓存对象
                 handle = {
@@ -182,8 +186,8 @@ smart.package(function(smart){
                         // 获取mouseout和mouseover的relatedTarget对象
                         var related = e.relatedTarget;
                         if (!related || (related !== element && !contains(element, related)))
-                          return handle.callback.apply(element, arguments);
-                    }
+                            return handle.callback.apply(element, arguments);
+                    };
                 }
                 fn = delegator || callback;
                 // 事件监听函数
@@ -198,7 +202,7 @@ smart.package(function(smart){
                     return result;
                 };
                 handles.push(handle);
-                if ('addEventListener' in element) {
+                if (element.addEventListener) {
                     element.addEventListener(realEvent(t), handle.proxy, false);
                 }
             });
@@ -209,7 +213,7 @@ smart.package(function(smart){
                 var i, handles;
                 handles = findHandles(t, element, callback, selector);
                 i = handles.length;
-                while(i--) {
+                while (i--) {
                     delete cache[id][handles[i].index];
                     if ('removeEventListener' in element) {
                         element.removeEventListener(t, handles[i].proxy, false);
@@ -234,7 +238,7 @@ smart.package(function(smart){
             if (type && !smart.isString(type)) {
                 smart.forEach(type, function(fn, t) {
                     Event.on(t, element, selector, callback);
-                })
+                });
                 return;
             }
             if (smart.isFunction(selector)) {
@@ -254,7 +258,7 @@ smart.package(function(smart){
             if (type && !smart.isString(type)) {
                 smart.forEach(type, function(fn, t) {
                     Event.on(t, element, selector, callback);
-                })
+                });
                 return;
             }
             if (smart.isFunction(selector)) {
@@ -275,13 +279,14 @@ smart.package(function(smart){
             if (!smart.isString(type)) return;
             smart.forEach(element, function(elem) {
                 smart.forEach(type.split(/\s/), function(t) {
-                    var evt, 
+                    var evt,
                         handles,
                         i;
 
                     if (/^(focus|blur)$/.test(t)) {
-                        try { elem[t]() } 
-                        catch (e) {}
+                        try {
+                            elem[t]();
+                        } catch (e) {}
                         return;
                     }
                     // 创建自定义事件
@@ -303,7 +308,7 @@ smart.package(function(smart){
                     while (i--) {
                         // 遍历循环执行回调
                         handles[i].proxy(evt);
-                        if (evt.isImmediatePropagationStopped()) return false
+                        if (evt.isImmediatePropagationStopped()) return false;
                     }
                 });
             });
@@ -312,8 +317,9 @@ smart.package(function(smart){
 
     // 绑定单个事件函数
     smart.forEach(['focusin', 'focusout', 'focus', 'blur', 'load', 'resize', 'scroll', 'unload', 'click', 'dblclick',
-    'mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave',
-    'change', 'select', 'keydown', 'keypress', 'keyup', 'error'], function(event) {
+        'mousedown', 'mouseup', 'mousemove', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave',
+        'change', 'select', 'keydown', 'keypress', 'keyup', 'error'
+    ], function(event) {
         Event[event] = function(elem, callback) {
             return callback ?
                 Event.bind(event, elem, callback) :
