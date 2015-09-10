@@ -6,6 +6,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="format-detection" content="telephone=no">
+<script type="text/javascript" src="//cdn.bootcss.com/zepto/1.1.6/zepto.min.js"></script>
+<script type="text/javascript" src="../src/smart.core.js"></script>
+<script type="text/javascript" src="../src/smart.dom.js"></script>
+<script type="text/javascript" src="../src/smart.event.js"></script>
+<script type="text/javascript">
+    smart.ready(function(){
+        var ul = document.getElementById('ul');
+        console.log(ul);
+        ul.onclick = function(){
+            alert('aa');
+        };
+    });
+</script>
 <style type="text/css">
 	html,body{
 		width: 100%;
@@ -22,17 +35,5 @@
     <li>content 4</li>
     <li>content 5</li>
 </ul>
-<script src="../src/smart.core.js"></script>
-<script src="../src/smart.dom.js"></script>
-<script src="../src/smart.event.js"></script>
-<script type="text/javascript">
-    smart.package(function(){
-        var ul = document.getElementById('ul');
-
-        smart.event.on('ul','click',function(){
-            alert('aa');
-        });
-    });
-</script>
 </body>
 </html>

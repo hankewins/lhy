@@ -187,5 +187,5 @@ smart.package(function(smart){
         }
     };
 
-    smart.$ = smart.dom = dom;
+    smart.dom = dom;
 });

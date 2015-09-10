@@ -16,7 +16,7 @@ var banner = ['/**',
   ''].join('\n');
 
 gulp.task('minifyjs', function(){
-    return gulp.src(['src/smart.core.js','src/smart.event.js','src/smart.http.js','src/smart.dom.js','src/smart.cookie.js'])
+    return gulp.src(['src/smart.core.js','src/smart.dom.js','src/smart.event.js'])
         .pipe(concat('smart.js'))
         .pipe(header(banner, { pkg : pkg } ))
         .pipe(gulp.dest('build/'+pkg.version))

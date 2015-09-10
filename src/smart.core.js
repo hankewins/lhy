@@ -4,17 +4,30 @@
  */
 (function(undefined) {
     //'use strict'
-    var win = window,
+    var root = this || (typeof window !== 'undefined' ? window : global),
+        win = window,
         doc = document,
         slice = Array.prototype.slice,
         jsTypeArr = ['Object', 'Array', 'Function', 'String', 'Number', 'Null', 'Undefined'],
         smart = smart || {};
+
     // use jquery or zepto selector enginer
     smart.$ = win.jQuery || win.Zepto || win.ender || win.$;
 
-    smart = {
+    console.log(smart);
+
+    extend(smart,{
         each: each,
         forEach: each,
+        trim: function(str) {
+            return str.replace(/^\s+|\s+$/g, '');
+        },
+        trimLeft: function(str) {
+            return str.replace(/^\s+/g, '');
+        },
+        trimRight: function(str) {
+            return str.replace(/\s+$/g, '');
+        },
         isEmptyObject: function(obj) {
             for (var name in obj) {
                 return false;
@@ -22,17 +35,17 @@
             return true;
         },
         namespace: function(str) {
-            var target = win,
-                tmp;
-            if (typeof str == 'string') {
-                for (var i = 0, arr = str.split('.'); i < arr.length; i++) {
-                    tmp = arr[i];
-                    target[tmp] = target[tmp] || {};
-                    target = target[tmp];
-                }
-            }
+            var target = null,
+                i, arr = str.split('.'),
+                len = arr.length;
 
-            return target;
+            target = this;
+
+            for (i = 0; i < arr.length; i++) {
+                tmp = arr[i];
+                target = target[tmp] = target[tmp] || {};
+            }
+            return this[arr[0]];
         },
         extend: function(target) {
             var deep, args = slice.call(arguments, 1);
@@ -42,6 +55,7 @@
             }
 
             each(args, function(index, item) {
+                console.log(target, item);
                 extend(target, item, deep);
             });
         },
@@ -55,7 +69,10 @@
             } else if (typeof name == "object") {
                 target = name;
             }
+
             func.call(target, this);
+
+            return target;
         },
         util: function(name, func) {
             func = smart.isFunction(func) ? func : empty;
@@ -68,10 +85,30 @@
                 smart.extend(smart.util, name);
             }
         },
-        trim: function(str) {
-            return str.replace(/^\s+|\s+$/g, '');
+        // http://www.cnblogs.com/haogj/archive/2013/01/15/2861950.html
+        // http://www.cnblogs.com/zhangziqiu/archive/2011/06/27/DOMReady.html
+        // https://github.com/jquery/jquery/blob/master/src/core/ready.js
+        // https://github.com/ded/domready/blob/master/ready.js
+        // Compatibility with IE6, IE7, and IE8 has been fully dropped. 
+        ready: function(func) {
+            var readyList = [],
+                ieHack = doc.documentElement.doScroll,
+                completed,
+                loaded = (ieHack ? /^loaded|^c/ : /^loaded|^i|^c/).test(doc.readyState);
+
+            if (!loaded) {
+                doc.addEventListener('DOMContentLoaded', completed = function() {
+                    doc.removeEventListener('DOMContentLoaded', completed, false);
+                    loaded = 1;
+                    while ((completed = readyList.shift())) {
+                        completed();
+                    }
+                }, false);
+            }
+
+            return loaded ? setTimeout(func) : readyList.push(func);
         }
-    };
+    });
 
     each(jsTypeArr, function(index, item) {
         smart['is' + item] = function(obj) {
@@ -124,12 +161,12 @@
         }
 
         if (fileSrc) {
-            for (var j = 0; j < len; j++) {
+            for (var j = 0; j < scriptLen; j++) {
                 if (scriptEls[j].src === fileSrc) return scriptEls[j];
             }
         }
 
-        return fileSrc || scriptEls[len - 1];
+        return fileSrc || scriptEls[scriptLen - 1];
 
     });
 
