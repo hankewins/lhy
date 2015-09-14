@@ -14,9 +14,7 @@
     // use jquery or zepto selector enginer
     smart.$ = win.jQuery || win.Zepto || win.ender || win.$;
 
-    console.log(smart);
-
-    extend(smart,{
+    extend(smart, {
         each: each,
         forEach: each,
         trim: function(str) {
@@ -246,6 +244,40 @@
             }
         }
     }
+
+    // http://www.360doc.com/content/13/0419/11/11247313_279415878.shtml
+    function _initStartTime() {
+        var performance, startTime;
+
+        performance = win.performance || win.webkitPerformance || win.mozPerformance || win.msPerformance;
+
+        if (performance && performance.timing && performance.timing.navigationStart) {
+
+            startTime = performance.timing.navigationStart;
+
+            // chrome browser
+
+        } else if (win.chrome && win.chrome.csi && win.chrome.csi().startE) {
+
+            startTime = win.chrome.csi().startE;
+
+            //http://www.360doc.com/content/13/0419/11/11247313_279415878.shtml
+        } else if (win.gtbExternal && win.gtbExternal.startE) {
+
+            startTime = win.gtbExternal.startE;
+
+        }
+
+        // 解决火狐7.8的bug
+        if (navigator.userAgent.match(/Firefox\/[78]\./)) {
+
+            this.navigationStart = performance.timing.unloadEventStart || performance.timing.fetchStart || undefined;
+        
+        }
+
+        return startTime;
+    }
+
 
     win.smart = smart;
 
