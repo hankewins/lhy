@@ -10,15 +10,6 @@
 <script type="text/javascript" src="../src/smart.core.js"></script>
 <script type="text/javascript" src="../src/smart.dom.js"></script>
 <script type="text/javascript" src="../src/smart.event.js"></script>
-<script type="text/javascript">
-    smart.ready(function(){
-        var ul = document.getElementById('ul');
-        console.log(ul);
-        ul.onclick = function(){
-            alert('aa');
-        };
-    });
-</script>
 <style type="text/css">
 	html,body{
 		width: 100%;
@@ -35,5 +26,8 @@
     <li>content 4</li>
     <li>content 5</li>
 </ul>
+<script type="text/javascript">
+    smart.util.application({module:'3g', 'env': 'test'});
+</script>
 </body>
 </html>

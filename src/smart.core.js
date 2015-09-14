@@ -53,9 +53,10 @@
             }
 
             each(args, function(index, item) {
-                console.log(target, item);
                 extend(target, item, deep);
             });
+
+            return target;
         },
         package: function(name, func) {
             var target;
@@ -169,12 +170,17 @@
     });
 
     // 定义应用的相关基础配置信息
-    smart.util('application', function(module) {
+    smart.util('application', function(options) {
         // 获取正在执行的Javascript文件的路径
         var currentScript = smart.util.currentScript();
         var staticPath = '',
+            format = 'json',
             assetsRoot, webRoot, modulePath, env, reg;
-        module = module || '';
+        var defaults = {};
+        var opts = smart.extend(defaults, options);
+
+        module = opts.module || '';
+
         if (module) {
             reg = new RegExp(module + '\\S+', 'ig');
         } else {
@@ -200,10 +206,18 @@
             }
         }
 
+        console.log(/localhost|dev.demo.gionee.com|demo.3gtest.gionee.com/.test(webRoot));
+        console.log(opts.env === 'test');
+
+        if (opts.env === 'test' && /localhost|dev.demo.gionee.com|demo.3gtest.gionee.com/.test(webRoot)) {
+            format = 'jsonp';
+        }
+
         return {
             staticPath: staticPath,
             assetsRoot: assetsRoot,
-            webRoot: webRoot
+            webRoot: webRoot,
+            format: format
         };
     });
 
@@ -272,7 +286,7 @@
         if (navigator.userAgent.match(/Firefox\/[78]\./)) {
 
             this.navigationStart = performance.timing.unloadEventStart || performance.timing.fetchStart || undefined;
-        
+
         }
 
         return startTime;

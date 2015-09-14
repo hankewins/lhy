@@ -21,9 +21,7 @@
     // use jquery or zepto selector enginer
     smart.$ = win.jQuery || win.Zepto || win.ender || win.$;
 
-    console.log(smart);
-
-    extend(smart,{
+    extend(smart, {
         each: each,
         forEach: each,
         trim: function(str) {
@@ -62,9 +60,10 @@
             }
 
             each(args, function(index, item) {
-                console.log(target, item);
                 extend(target, item, deep);
             });
+
+            return target;
         },
         package: function(name, func) {
             var target;
@@ -178,12 +177,17 @@
     });
 
     // 定义应用的相关基础配置信息
-    smart.util('application', function(module) {
+    smart.util('application', function(options) {
         // 获取正在执行的Javascript文件的路径
         var currentScript = smart.util.currentScript();
         var staticPath = '',
+            format = 'json',
             assetsRoot, webRoot, modulePath, env, reg;
-        module = module || '';
+        var defaults = {};
+        var opts = smart.extend(defaults, options);
+
+        module = opts.module || '';
+
         if (module) {
             reg = new RegExp(module + '\\S+', 'ig');
         } else {
@@ -209,10 +213,18 @@
             }
         }
 
+        console.log(/localhost|dev.demo.gionee.com|demo.3gtest.gionee.com/.test(webRoot));
+        console.log(opts.env === 'test');
+
+        if (opts.env === 'test' && /localhost|dev.demo.gionee.com|demo.3gtest.gionee.com/.test(webRoot)) {
+            format = 'jsonp';
+        }
+
         return {
             staticPath: staticPath,
             assetsRoot: assetsRoot,
-            webRoot: webRoot
+            webRoot: webRoot,
+            format: format
         };
     });
 
@@ -253,6 +265,40 @@
             }
         }
     }
+
+    // http://www.360doc.com/content/13/0419/11/11247313_279415878.shtml
+    function _initStartTime() {
+        var performance, startTime;
+
+        performance = win.performance || win.webkitPerformance || win.mozPerformance || win.msPerformance;
+
+        if (performance && performance.timing && performance.timing.navigationStart) {
+
+            startTime = performance.timing.navigationStart;
+
+            // chrome browser
+
+        } else if (win.chrome && win.chrome.csi && win.chrome.csi().startE) {
+
+            startTime = win.chrome.csi().startE;
+
+            //http://www.360doc.com/content/13/0419/11/11247313_279415878.shtml
+        } else if (win.gtbExternal && win.gtbExternal.startE) {
+
+            startTime = win.gtbExternal.startE;
+
+        }
+
+        // 解决火狐7.8的bug
+        if (navigator.userAgent.match(/Firefox\/[78]\./)) {
+
+            this.navigationStart = performance.timing.unloadEventStart || performance.timing.fetchStart || undefined;
+
+        }
+
+        return startTime;
+    }
+
 
     win.smart = smart;
 
