@@ -7,9 +7,10 @@ smart起源于涉世未深的三个臭皮匠，因对前端的执着，带着各
 smart宗旨因智慧过生，有你、有我、有他，简单、易懂、轻便。
 
 功能简介:<br>
-\- 代码组织（package，extend，app，namespace，util，widget）<br>
-\- 通用模块（ajax，animate，cookie...）<br>
-\- 动态加载（inc，include，require，use）<br>
+\- 代码组织（package, extend, namespace, util）<br>
+\- 通用模块（util, ajax, animate, cookie...）<br>
+\- 动态加载（inc, include, require, use）<br>
+\- 特色功能（application, log, report）
 
 ## Documentation
 _(Coming soon)_

@@ -113,6 +113,14 @@
             }
 
             return loaded ? setTimeout(func) : readyList.push(func);
+        },
+        log: function(msg) {
+            var args = slice.call(arguments);
+            if (win.console && console.log) {
+                console.log.apply(console, args);
+            } else {
+                alert(msg);
+            }
         }
     });
 
@@ -180,10 +188,8 @@
     smart.util('application', function(options) {
         // 获取正在执行的Javascript文件的路径
         var currentScript = smart.util.currentScript();
-        var staticPath = '',
-            format = 'json',
-            assetsRoot, webRoot, modulePath, env, reg;
-        var defaults = {};
+        var format = 'json',
+            assetsPath, webroot, modulePath, env, reg, defaults = {};
         var opts = smart.extend(defaults, options);
 
         module = opts.module || '';
@@ -194,37 +200,36 @@
             reg = new RegExp(module + '\/[^\/]+$', 'ig');
         }
         modulePath = currentScript.src.replace(reg, module);
-        staticPath = modulePath;
 
         if (currentScript.src.indexOf(location.host) > -1) {
-            webRoot = location.protocol + '//' + location.host;
-            assetsRoot = webRoot;
+            webroot = location.protocol + '//' + location.host;
+            assetsPath = webroot;
         } else {
-            webRoot = location.protocol + '//' + location.host;
+            webroot = location.protocol + '//' + location.host;
             if (currentScript.src.indexOf('localhost') > -1) {
-                assetsRoot = 'http://localhost';
+                assetsPath = 'http://localhost';
             } else {
                 if (currentScript.src.indexOf('//') > -1) {
                     var protocol = currentScript.src.substring(0, currentScript.src.indexOf('//') + 2);
                     var host = currentScript.src.replace(protocol, '');
                     host = host.substring(0, host.indexOf('/'));
-                    assetsRoot = protocol + host;
+                    assetsPath = protocol + host;
                 }
             }
         }
 
-        console.log(/localhost|dev.demo.gionee.com|demo.3gtest.gionee.com/.test(webRoot));
-        console.log(opts.env === 'test');
+        isLocalAddr = /(192|127).[\d]{1,3}.[\d]{1,3}.[\d]{1,3}|localhost|dev.demo.gionee.com|demo.3gtest.gionee.com/;
 
-        if (opts.env === 'test' && /localhost|dev.demo.gionee.com|demo.3gtest.gionee.com/.test(webRoot)) {
+        if (opts.env === 'test' && isLocalAddr.test(webroot)) {
             format = 'jsonp';
+            webroot = 'http://3g.3gtest.gionee.com';
         }
 
         return {
-            staticPath: staticPath,
-            assetsRoot: assetsRoot,
-            webRoot: webRoot,
-            format: format
+            modulePath: opts.modulePath || modulePath,
+            assetsPath: opts.assetsPath || assetsPath,
+            webroot: opts.webroot || webroot,
+            format: opts.format || format
         };
     });
 

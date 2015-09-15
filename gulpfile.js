@@ -15,6 +15,8 @@ var banner = ['/**',
   ' */',
   ''].join('\n');
 
+var projectRoot = '../../ued/repos/sys/smart/';
+
 gulp.task('minifyjs', function(){
     return gulp.src(['src/smart.core.js','src/smart.dom.js','src/smart.event.js'])
         .pipe(concat('smart.js'))
@@ -22,7 +24,8 @@ gulp.task('minifyjs', function(){
         .pipe(gulp.dest('build/'+pkg.version))
         .pipe(rename({suffix:'.min'}))
         .pipe(uglify({preserveComments: 'some'}))
-        .pipe(gulp.dest('build/'+pkg.version));
+        .pipe(gulp.dest('build/'+pkg.version))
+        .pipe(gulp.dest(projectRoot + pkg.version));
 });
 
 gulp.task('default', function(){
