@@ -64,8 +64,8 @@ smart.package(function(smart) {
 			version: version,
 			platform: platform,
 			engine: engine
-		}
-	}
+		};
+	};
 	var browser = {};
 	browser = parseUA(navigator.userAgent, navigator.platform); //get name、version、platform
 
@@ -86,7 +86,7 @@ smart.package(function(smart) {
 				} catch (e) {}
 			}
 			return null;
-		}
+		};
 		return attempt(function() {
 			XMLHTTP();
 			return XMLHTTP;
@@ -96,7 +96,7 @@ smart.package(function(smart) {
 		}, function() {
 			MSXML();
 			return MSXML;
-		})
+		});
 	})();
 
 	browser.Features = {
@@ -110,7 +110,7 @@ smart.package(function(smart) {
 		width:win.screen.width,
 		height:win.screen.height,
 		dpi:win.devicePixelRatio
-	}
+	};
 
 	smart.browser = browser;
 });

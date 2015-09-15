@@ -114,6 +114,11 @@
             } else {
                 alert(msg);
             }
+        },
+        report: function(){
+            return {
+                startTime: _initStartTime()
+            };
         }
     });
 

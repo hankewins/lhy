@@ -16,12 +16,25 @@ smart.package(function(smart){
     var trailingSlash = /\/$/;
 
     var addEvent = function(elem, type, callback) {
-        doc.addEventListener ? elem.addEventListener(type, callback, false) : elem.attachEvent('on' + type, callback);
+        if(doc.addEventListener){
+            elem.addEventListener(type, callback, false);
+        } else if(doc.attachEvent){
+            elem.attachEvent('on' + type, function(){
+                return callback.call(elem);
+            });
+        } else {
+            elem['on'+type] = callback;
+        }
     };
 
     var removeEvent = function(elem, type, callback) {
-        doc.removeEventListener ? elem.removeEventListener(type, callback) :
+        if(doc.removeEventListener){
+            elem.removeEventListener(type, callback, false);
+        } else if(doc.dettachEvent){
             elem.dettachEvent('on' + type, callback);
+        } else {
+            elem['on'+type] = null;
+        }
     };
     
 
@@ -44,8 +57,11 @@ smart.package(function(smart){
                 routes = routes();
             }
             for (route in routes) {
-                (typeof routes[route] === 'string') ? 
-                    (callback = options[routes[route]] || null) : (callback = routes[route]); 
+                if((typeof routes[route] === 'string')){
+                    callback = options[routes[route]] || null;
+                } else {
+                    callback = routes[route];
+                }
                 this.add(route, callback);
             }
             return this;
