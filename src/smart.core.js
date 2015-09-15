@@ -1,3 +1,9 @@
+/* 
+* @Author: hankewins
+* @Date:   2015-09-15 14:26:48
+* @Last Modified by:   hankewins
+* @Last Modified time: 2015-09-15 19:44:10
+*/
 /**
  * 起源：涉世未深的三个臭皮匠，因对前端的执着，带着各自的信念，开始 smart 创作之路。
  * 定位：smart 因智慧过生，有你、有我、有他，简单、易懂、轻便。
@@ -6,7 +12,7 @@
     //'use strict'
     var root = this || (typeof window !== 'undefined' ? window : global),
         win = window,
-        doc = document,
+        doc = win.document,
         slice = Array.prototype.slice,
         jsTypeArr = ['Object', 'Array', 'Function', 'String', 'Number', 'Null', 'Undefined'],
         smart = smart || {};
@@ -93,6 +99,7 @@
             var readyList = [],
                 ieHack = doc.documentElement.doScroll,
                 completed,
+                // document.readyState loaded || complete || interactive
                 loaded = (ieHack ? /^loaded|^c/ : /^loaded|^i|^c/).test(doc.readyState);
 
             if (!loaded) {
@@ -114,11 +121,6 @@
             } else {
                 alert(msg);
             }
-        },
-        report: function(){
-            return {
-                startTime: _initStartTime()
-            };
         }
     });
 
@@ -128,10 +130,30 @@
         };
     });
 
+    // 常用的util方法和函数
+    smart.util(
+    {
+        /**
+         * 针对静态资源分离的项目配置项
+         * @param  {object} {env: 'test', webroot: 'api domain', format: 'json|jsonp'} 参数都可选
+         * @return {object} {modulePath|assetsPath|webroot|format} 返回对应参数的值
+         */
+        application: function(options){
+            return application(options);
+        },
+        report: {
+            startTime: _initStartTime()
+        },
+
+    });
+
+    // Empty function, used as default callback
+    function empty() {}
+
     // 参考的资料信息
     // https://github.com/JamesMGreene/document.currentScript
     // https://developer.mozilla.org/zh-CN/docs/Web/API/document.currentScript
-    smart.util('currentScript', function() {
+    function getCurrentScript(){
         var scriptEls = doc.getElementsByTagName('script'),
             scriptLen = scriptEls.length,
             fileSrc;
@@ -179,13 +201,12 @@
         }
 
         return fileSrc || scriptEls[scriptLen - 1];
-
-    });
+    }
 
     // 定义应用的相关基础配置信息
-    smart.util('application', function(options) {
+    function application(options){
         // 获取正在执行的Javascript文件的路径
-        var currentScript = smart.util.currentScript();
+        var currentScript = getCurrentScript();
         var format = 'json',
             assetsPath, webroot, modulePath, env, reg, defaults = {};
         var opts = smart.extend(defaults, options);
@@ -229,10 +250,7 @@
             webroot: opts.webroot || webroot,
             format: opts.format || format
         };
-    });
-
-    // Empty function, used as default callback
-    function empty() {}
+    }
 
     function each(collection, callback) {
         var oToString = Object.prototype.toString;

@@ -1,11 +1,16 @@
+/* 
+ * @Author: hankewins
+ * @Date:   2015-09-07 19:35:01
+ * @Last Modified by:   hankewins
+ * @Last Modified time: 2015-09-15 15:23:45
+ */
 /**
  *  smart.event.js
  */
 
-smart.package(function(smart) {
-
-    var win = window;
-    var doc = document;
+smart.package(function() {
+    var win = window,
+        doc = document;
     // 标识绑定元素与回调函数的唯一性
     var _guid = 1;
     /*缓存绑定的元素、事件、回调、代理函数

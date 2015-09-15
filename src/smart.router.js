@@ -1,3 +1,9 @@
+/* 
+* @Author: hankewins
+* @Date:   2015-09-15 14:38:05
+* @Last Modified by:   hankewins
+* @Last Modified time: 2015-09-15 14:46:23
+*/
 // import smart.core.js
 // smart.router.js
 

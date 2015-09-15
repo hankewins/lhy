@@ -1,13 +1,23 @@
-// import smart.core.js
-// smart.dom.js
-smart.package(function(smart){
-    var doc = document;
-    var div = doc.createElement('div');
+/* 
+* @Author: hankewins
+* @Date:   2015-09-15 14:46:06
+* @Last Modified by:   hankewins
+* @Last Modified time: 2015-09-15 17:22:11
+*/
+/**
+ * @import import smart.core.js
+ * @name smart.dom.js
+ */
+smart.package(function(){
+    var doc = document, div = doc.createElement('div'), slice = Array.prototype.slice;
     // IE 10.0+ Firefox 3.6+ Chrome 8.0+ Safari 5.1+ Opera 11.5+ Android 3.0
     // http://caniuse.com/classlist
     var supportNavtiveClassList = 'classList' in document.documentElement;
 
-    var dom = {
+    // 定义一个 smart.dom 全名空间
+    smart.namespace('dom');
+
+    smart.extend(smart.dom, {
         one: function(selector, context){
             if (!selector){
                 return;
@@ -92,12 +102,14 @@ smart.package(function(smart){
         },
         children: function(elem){
             if (elem.childElementCount){
-                return [].slice.call(el.children);
+                return slice.call(el.children);
             }
 
             var ret = [];
             for (var node = elem.firstChild; node; node = node.nextSlibling){
-                (node.nodeType === 1) && ret.push(node);
+                if(node.nodeType === 1){
+                    ret.push(node);
+                }
             }
 
             return ret;
@@ -107,7 +119,8 @@ smart.package(function(smart){
                 return elem.nextElementSibling;
             }
 
-            while(elem = elem.nextSlibling){
+            while(elem){
+                elem = elem.nextSlibling;
                 if(elem.nodeType === 1){
                     return elem;
                 }
@@ -118,7 +131,8 @@ smart.package(function(smart){
                 return elem.previousElementSibling;
             }
 
-            while(elem = elem.previousSibling){
+            while(elem){
+                elem = elem.previousSibling;
                 if(elem.nodeType === 1){
                     return elem;
                 }
@@ -129,7 +143,8 @@ smart.package(function(smart){
                 return elem.firstElementChild;
             }
 
-            while(elem = elem.firstChild){
+            while(elem){
+                elem = elem.firstChild;
                 if(elem.nodeType === 1){
                     return elem;
                 }
@@ -140,7 +155,8 @@ smart.package(function(smart){
                 return elem.firstElementChild;
             }
 
-            while(elem = elem.lastChild){
+            while(elem){
+                elem = elem.lastChild;
                 if(elem.nodeType === 1){
                     return elem;
                 }
@@ -151,7 +167,8 @@ smart.package(function(smart){
                 return elem.parentElement;
             }
 
-            while(elem = elem.parentNode){
+            while(elem){
+                elem = elem.parentNode;
                 if(elem.nodeType === 1){
                     return elem;
                 }
@@ -185,7 +202,5 @@ smart.package(function(smart){
             }
             return newElement;
         }
-    };
-
-    smart.dom = dom;
+    });
 });

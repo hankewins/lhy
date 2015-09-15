@@ -1,3 +1,9 @@
+/* 
+* @Author: hankewins
+* @Date:   2015-09-02 14:28:12
+* @Last Modified by:   hankewins
+* @Last Modified time: 2015-09-15 14:46:28
+*/
 // @import smart.core.js
 // smart.http contains http params ajax
 smart.package(function(smart){

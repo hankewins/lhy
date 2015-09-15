@@ -1,3 +1,9 @@
+/* 
+* @Author: hankewins
+* @Date:   2015-09-15 14:27:22
+* @Last Modified by:   hankewins
+* @Last Modified time: 2015-09-15 14:47:15
+*/
 // Todo
 smart.package(function(smart) {
 	var doc = this.document,

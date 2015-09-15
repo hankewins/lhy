@@ -1,3 +1,9 @@
+/* 
+* @Author: hankewins
+* @Date:   2015-09-07 14:56:40
+* @Last Modified by:   hankewins
+* @Last Modified time: 2015-09-15 14:46:48
+*/
 smart.package(function() {
 	var date = {
 		isDate: function(d) {

@@ -1,3 +1,9 @@
+/* 
+* @Author: hankewins
+* @Date:   2015-09-07 14:55:42
+* @Last Modified by:   hankewins
+* @Last Modified time: 2015-09-15 14:47:17
+*/
 /** 
  * @description
  * Package: smart.cookie

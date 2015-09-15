@@ -10,6 +10,7 @@
 <script type="text/javascript" src="../src/smart.core.js"></script>
 <script type="text/javascript" src="../src/smart.dom.js"></script>
 <script type="text/javascript" src="../src/smart.event.js"></script>
+<script type="text/javascript" src="../src/smart.loader.js"></script>
 <style type="text/css">
 	html,body{
 		width: 100%;
@@ -26,8 +27,16 @@
     <li>content 4</li>
     <li>content 5</li>
 </ul>
+<input type="button" value="提交" id="btn-submit" />
 <script type="text/javascript">
-    smart.util.application({module:'3g', 'env': 'test'});
+    smart.ready(function(){
+        var btn = smart.dom.one('#btn-submit');
+
+        smart.event.on('click', btn, 'body', function(){
+            alert('aaa');
+        });
+
+    });
 </script>
 </body>
 </html>
