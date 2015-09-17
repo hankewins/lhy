@@ -2,7 +2,7 @@
 * @Author: hankewins
 * @Date:   2015-09-15 14:46:06
 * @Last Modified by:   hankewins
-* @Last Modified time: 2015-09-15 17:22:11
+* @Last Modified time: 2015-09-17 15:12:07
 */
 /**
  * @import import smart.core.js
@@ -34,7 +34,7 @@ smart.package(function(){
         },
         // querySelector slower than getElementById
         // querySelectorAll slower than getElementsByTagName
-        // http://www.w3cfuns.com/article-5593688-1-1.html 
+        // http://www.w3cfuns.com/article-5593688-1-1.html
         id: function(id){
             return doc.getElementById(id);
         },
