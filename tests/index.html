@@ -31,19 +31,5 @@
     <li>content 5</li>
 </ul>
 <input type="button" value="提交" id="btn-submit" />
-<script type="text/javascript">
-    smart.ready(function(){
-        var btn = smart.dom.one('#btn-submit');
-
-        smart.event.on('click', btn, 'body', function(){
-            alert('aaa');
-        });
-
-    });
-
-    smart.loader.inc('../src/smart.cookie.js', function(){
-        alert('load smart.cookie.js');
-    });
-</script>
 </body>
 </html>
